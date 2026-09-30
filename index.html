@@ -31,7 +31,7 @@ input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;pad
 </header>
 
 <section class="card">
-<h2>1. Who's on the trip?</h2>
+<h2>Your Trip</h2>
 <input id="trip" class="wide" placeholder="Trip name (e.g. Napa Weekend)">
 <label class="hint" style="display:block;margin-top:12px"><strong>Add a traveler</strong></label>
 <div class="row" style="margin-top:6px"><input id="travelerName" placeholder="Enter name"><button id="addTraveler" type="button" class="primary">+ Add</button></div>
@@ -39,7 +39,7 @@ input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;pad
 </section>
 
 <section class="card">
-<h2>2. Add an expense</h2><div id="editBanner" class="editBanner hidden">Editing expense</div>
+<h2>Add Expense</h2><div id="editBanner" class="editBanner hidden">Editing expense</div>
 <div class="row stack"><input id="description" placeholder="Expense (e.g. Dinner)"><input id="amount" type="number" inputmode="decimal" min="0" step=".01" placeholder="Bill amount"></div>
 <input id="tip" class="wide" type="number" inputmode="decimal" min="0" step=".01" placeholder="Tip not included above? (optional)" style="margin-top:9px">
 <select id="payer" class="wide" style="margin-top:9px"><option value="">Who paid?</option></select>
@@ -62,9 +62,14 @@ input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;pad
 <div class="row" style="margin-top:13px"><button id="saveExpense" type="button" class="primary">Add expense</button><button id="cancelEdit" type="button" class="hidden">Cancel edit</button></div>
 </section>
 
-<section class="card"><h2>3. Expenses</h2><div id="expenses" class="empty">No expenses yet. Add as many trip expenses as you need.</div></section>
+<section class="card"><h2>Trip Expenses</h2><div id="expenses" class="empty">No expenses yet. Add as many trip expenses as you need.</div></section>
 
-<section class="card"><h2>4. Final split</h2><div class="row"><button id="calculate" type="button" class="primary">Calculate</button><button id="copy" type="button">Copy text</button></div><div id="result" class="result">Your settlement will appear here.</div></section>
+<section class="card"><h2>Final Split</h2><button id="calculate" type="button" class="primary wide">Calculate Split</button>
+<div id="result" class="result">Your settlement will appear here.</div>
+<div class="row" style="margin-top:10px">
+  <button id="copy" type="button">Copy Summary</button>
+  <button id="email" type="button">Email Summary</button>
+</div></section>
 </main>
 
 <script>
@@ -122,6 +127,13 @@ E("addTraveler").onclick=addTraveler;E("travelerName").onkeydown=function(e){if(
 E("amount").oninput=function(){renderCustom();renderTreat()};E("tip").oninput=function(){renderCustom();renderTreat()};E("equalMode").onchange=function(){renderCustom();renderTreat()};E("customMode").onchange=function(){renderCustom();renderTreat()};E("treated").onchange=function(){renderTreat()};
 E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("calculate").onclick=calculate;E("trip").oninput=save;
 E("copy").onclick=function(){var t=E("result").textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert("Copied!")});else alert("Press and hold the result to copy.")};
+E("email").onclick=function(){
+ var body=E("result").textContent;
+ if(body==="Your settlement will appear here."){alert("Calculate the final split first.");return}
+ var trip=E("trip").value.trim()||"Trip";
+ var subject=trip+" — Final Split";
+ window.location.href="mailto:?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);
+};
 load();renderTravelers();renderExpenses()
 })();
 </script></body></html>

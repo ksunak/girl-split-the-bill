@@ -71,7 +71,7 @@ input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;pad
 <div id="result" class="result">Your settlement will appear here.</div>
 <div class="row" style="margin-top:10px">
   <button id="copy" type="button">Copy Summary</button>
-  <button id="email" type="button">Email Summary</button>
+  <button id="share" type="button">Share Summary</button>
 </div></section>
 </main>
 
@@ -124,18 +124,51 @@ function renderExpenses(){var b=E("expenses");b.innerHTML="";if(!state.expenses.
 function calculate(){var bal={};for(var p=0;p<state.people.length;p++)bal[state.people[p]]=0;
  for(var k=0;k<state.expenses.length;k++){var e=state.expenses[k];if(!e.participants.length)continue;var total=e.amount+(e.tip||0);bal[e.payer]+=total;var equal=total/e.participants.length,rawExtra=0,covered=0,specialBase=0;if(e.special){for(var x in e.extras)rawExtra+=e.extras[x];specialBase=e.splitMode==="custom"?(e.customShares[e.special]||0):equal;covered=Math.min(rawExtra,specialBase)}
   for(var j=0;j<e.participants.length;j++){var person=e.participants[j],owed=e.splitMode==="custom"?(e.customShares[person]||0):equal;if(person===e.special)owed-=covered;else if(e.special&&covered>0&&rawExtra>0)owed+=(e.extras[person]||0)*(covered/rawExtra);bal[person]-=owed}}
- var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}var lines=[],i=0,j=0;while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]);lines.push(debt[i][0]+" pays "+cred[j][0]+" "+money(v));debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}var trip=E("trip").value.trim();var friendly=trip?("Hi! Here is the total for the "+trip+" event 💕"):("Hi! Here is your final split 💕");var out=[];for(var z=0;z<lines.length;z++){var recipient=lines[z].split(" pays ")[1];recipient=recipient?recipient.split(" $")[0]:"";out.push(lines[z]+(recipient&&state.venmo[recipient]?" — Venmo: "+state.venmo[recipient]:""))}E("result").textContent=friendly+"\n\nFinal Split\n"+(out.length?out.join("\n"):"Everyone is settled up!");save()}
+ var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}var lines=[],i=0,j=0;while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]);lines.push(debt[i][0]+" owes "+cred[j][0]+" "+money(v));debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}var trip=E("trip").value.trim();
+var heading=trip?trip+" 💕":"Final Split 💕";
+var out=[];
+for(var z=0;z<lines.length;z++){
+ var recipient=lines[z].split(" owes ")[1];
+ recipient=recipient?recipient.split(" $")[0]:"";
+ var item=lines[z];
+ if(recipient&&state.venmo[recipient])item+="
+Venmo: "+state.venmo[recipient];
+ out.push(item);
+}
+E("result").textContent=heading+"
+
+Here’s the final split:
+
+"+(out.length?out.join("
+
+"):"Everyone is settled up!")+"
+
+Thanks everyone! 💕";
+save()}
 
 E("addTraveler").onclick=addTraveler;E("travelerName").onkeydown=function(e){if((e||window.event).keyCode===13){if(e.preventDefault)e.preventDefault();addTraveler();return false}};
 E("payer").onchange=function(){E("venmo").value=state.venmo[this.value]||""};E("amount").oninput=function(){renderCustom();renderTreat()};E("tip").oninput=function(){renderCustom();renderTreat()};E("equalMode").onchange=function(){renderCustom();renderTreat()};E("customMode").onchange=function(){renderCustom();renderTreat()};E("treated").onchange=function(){renderTreat()};
 E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("calculate").onclick=calculate;E("trip").oninput=save;
 E("copy").onclick=function(){var t=E("result").textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert("Copied!")});else alert("Press and hold the result to copy.")};
-E("email").onclick=function(){
+E("share").onclick=async function(){
  var body=E("result").textContent;
  if(body==="Your settlement will appear here."){alert("Calculate the final split first.");return}
- var trip=E("trip").value.trim()||"Trip";
- var subject=trip+" — Final Split";
- window.location.href="mailto:?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body);
+ var trip=E("trip").value.trim();
+ var title=trip?trip+" — Final Split":"Final Split";
+ if(navigator.share){
+  try{
+   await navigator.share({title:title,text:body});
+  }catch(err){
+   if(err.name!=="AbortError")alert("Sharing wasn't available. Try Copy Summary instead.");
+  }
+ }else{
+  try{
+   await navigator.clipboard.writeText(body);
+   alert("Summary copied! You can paste it into Messages, WhatsApp, email, or another app.");
+  }catch(err){
+   alert("Sharing isn't supported in this browser. Try Copy Summary instead.");
+  }
+ }
 };
 load();renderTravelers();renderExpenses()
 })();

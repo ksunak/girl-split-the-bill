@@ -4,48 +4,47 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Girl Split the Bill</title>
-<meta name="description" content="A simple group trip expense splitter for different participants and special-person contributions.">
+<meta name="description" content="Split group trip expenses when different people join different activities, and easily cover a birthday girl or special guest.">
 <style>
 :root{--bg:#fff8fb;--card:#fff;--ink:#2d2330;--muted:#756b75;--accent:#c83f75;--accent2:#9e2f5c;--soft:#fde8f0;--line:#eadfe4;--gold:#fff6dd;--green:#217653}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 main{max-width:720px;margin:auto;padding:18px 14px 50px}.hero{text-align:center;padding:10px 8px}h1{margin:4px 0;font-size:30px}h2{font-size:19px;margin:0 0 13px}
 .sub,.hint{color:var(--muted);font-size:14px;line-height:1.45}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:17px;margin:14px 0;box-shadow:0 5px 20px rgba(70,30,50,.05)}
-input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;padding:12px;background:#fff;color:var(--ink)}button{cursor:pointer}.primary{background:var(--accent);color:#fff;border:0;font-weight:700}.primary:active{background:var(--accent2)}
-.wide{width:100%}.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}.pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.pill{background:var(--soft);border-radius:999px;padding:7px 10px}
+input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;padding:12px;background:#fff;color:var(--ink)}button{cursor:pointer}.primary{background:var(--accent);color:#fff;border:0;font-weight:700}.secondary{font-weight:650}.wide{width:100%}
+.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}.traveler{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}.traveler:last-child{border:0}.travelerName{flex:1;font-weight:650}
 .person{display:flex;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.person:last-child{border:0}.person input[type=checkbox]{width:21px;height:21px;accent-color:var(--accent)}.grow{flex:1;font-weight:600}
 .special{background:var(--gold);border:1px solid #eddca6;border-radius:14px;padding:12px;margin-top:13px}.contrib{display:grid;grid-template-columns:1fr 105px;gap:8px;align-items:center;margin-top:8px}.coverage{margin-top:9px;font-weight:650;color:var(--green)}
-.expense{padding:12px 0;border-bottom:1px solid var(--line)}.expense:last-child{border:0}.expenseTop{display:flex;justify-content:space-between;gap:8px}.mini{padding:6px 9px;font-size:12px}.danger{color:#a52f53;background:#fff}
-.result{white-space:pre-wrap;background:#f8f5f7;border-radius:12px;padding:14px;line-height:1.65;margin-top:12px}.empty{color:var(--muted);font-size:14px}
-@media(max-width:520px){.stack{display:block}.stack>*{width:100%;margin-top:8px}}
-</style>
-</head>
+.expense{padding:12px 0;border-bottom:1px solid var(--line)}.expense:last-child{border:0}.expenseTop{display:flex;justify-content:space-between;gap:10px}.actions{display:flex;gap:5px;align-items:flex-start}.mini{padding:6px 9px;font-size:12px}.danger{color:#a52f53}.editBanner{background:var(--soft);padding:9px 11px;border-radius:10px;margin-bottom:10px;font-size:14px;font-weight:650}
+.result{white-space:pre-wrap;background:#f8f5f7;border-radius:12px;padding:14px;line-height:1.65;margin-top:12px}.empty{color:var(--muted);font-size:14px}.hidden{display:none!important}
+@media(max-width:520px){.stack{display:block}.stack>*{width:100%;margin-top:8px}.expenseTop{display:block}.actions{margin-top:8px}}
+</style></head>
 <body><main>
 <div class="hero"><h1>Girl Split the Bill 💕</h1><div class="sub">Different people, different expenses, one easy final split.</div></div>
 
 <section class="card">
-<h2>1. Trip & people</h2>
+<h2>1. Who's on the trip?</h2>
 <input id="trip" class="wide" placeholder="Trip name (e.g. Napa Weekend)">
-<div class="row" style="margin-top:10px"><input id="personName" placeholder="Person's name"><button id="addPerson" type="button" class="primary">+ Add</button></div>
-<div id="people" class="pills"></div>
+<label class="hint" style="display:block;margin-top:12px"><b>Add a traveler</b></label>
+<div class="row" style="margin-top:6px"><input id="travelerName" placeholder="Enter name"><button id="addTraveler" type="button" class="primary">+ Add</button></div>
+<div class="hint" style="margin-top:13px"><b>People on this trip</b></div>
+<div id="travelers"><div class="empty">No travelers added yet.</div></div>
 </section>
 
 <section class="card">
 <h2>2. Add an expense</h2>
-<div class="row stack"><input id="description" placeholder="Expense (Dinner)"><input id="amount" type="number" inputmode="decimal" min="0" step=".01" placeholder="Amount"></div>
+<div id="editBanner" class="editBanner hidden">Editing expense</div>
+<div class="row stack"><input id="description" placeholder="Expense (e.g. Dinner)"><input id="amount" type="number" inputmode="decimal" min="0" step=".01" placeholder="Amount"></div>
 <select id="payer" class="wide" style="margin-top:9px"><option value="">Who paid?</option></select>
-<p class="hint">Who participated? Everyone is selected by default.</p>
+<p class="hint"><b>Who should share this expense?</b><br>Everyone starts selected. Uncheck anyone who didn't participate.</p>
 <div id="participants"></div>
-
 <div class="special">
-<label><input id="treatToggle" type="checkbox"> 🎁 Help cover someone's share</label>
-<div id="treatArea" style="display:none;margin-top:10px">
-<select id="treated" class="wide"><option value="">Choose person</option></select>
-<div id="suggestion" class="hint" style="margin-top:8px"></div>
-<div id="contributors"></div>
-<div id="coverage" class="coverage"></div>
-</div>
-</div>
-<button id="addExpense" type="button" class="primary wide" style="margin-top:13px">Add expense</button>
+<label><input id="treatToggle" type="checkbox"> 🎁 Are you treating someone?</label>
+<div id="treatArea" class="hidden" style="margin-top:10px">
+<label class="hint"><b>Whose share are you helping cover?</b></label>
+<select id="treated" class="wide" style="margin-top:5px"><option value="">Choose traveler</option></select>
+<div id="suggestion" class="hint" style="margin-top:8px"></div><div id="contributors"></div><div id="coverage" class="coverage"></div>
+</div></div>
+<div class="row" style="margin-top:13px"><button id="saveExpense" type="button" class="primary">Add expense</button><button id="cancelEdit" type="button" class="hidden">Cancel edit</button></div>
 </section>
 
 <section class="card"><h2>3. Expenses</h2><div id="expenses" class="empty">No expenses yet.</div></section>
@@ -56,109 +55,85 @@ input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;pad
 <div id="result" class="result">Your settlement will appear here.</div>
 </section>
 </main>
-
 <script>
 (function(){
-var state={trip:"",people:[],expenses:[]};
-function el(id){return document.getElementById(id)}
-function money(n){return "$"+Number(n).toFixed(2)}
-function save(){state.trip=el("trip").value;localStorage.setItem("girlSplitState",JSON.stringify(state))}
-function load(){try{var s=JSON.parse(localStorage.getItem("girlSplitState"));if(s&&s.people&&s.expenses)state=s}catch(e){}el("trip").value=state.trip||""}
+var state={trip:"",people:[],expenses:[]}, editing=-1;
+function E(id){return document.getElementById(id)} function money(n){return "$"+Number(n).toFixed(2)}
+function save(){state.trip=E("trip").value;localStorage.setItem("girlSplitState",JSON.stringify(state))}
+function load(){try{var x=JSON.parse(localStorage.getItem("girlSplitState"));if(x&&Array.isArray(x.people)&&Array.isArray(x.expenses))state=x}catch(e){}E("trip").value=state.trip||""}
 function selected(){var a=[],b=document.querySelectorAll(".participant");for(var i=0;i<b.length;i++)if(b[i].checked)a.push(b[i].value);return a}
-
-function renderPeople(){
- var box=el("people");box.innerHTML="";
- for(var i=0;i<state.people.length;i++){var s=document.createElement("span");s.className="pill";s.textContent=state.people[i];box.appendChild(s)}
- var payer=el("payer");payer.innerHTML='<option value="">Who paid?</option>';
- for(i=0;i<state.people.length;i++){var o=document.createElement("option");o.value=state.people[i];o.textContent=state.people[i];payer.appendChild(o)}
+function usedBy(name){var n=0;for(var i=0;i<state.expenses.length;i++){var e=state.expenses[i];if(e.payer===name||e.participants.indexOf(name)>=0||e.special===name)n++}return n}
+function renderTravelers(){
+ var b=E("travelers");b.innerHTML="";
+ if(!state.people.length){b.innerHTML='<div class="empty">No travelers added yet.</div>'}
+ for(var i=0;i<state.people.length;i++){(function(ix){
+  var r=document.createElement("div");r.className="traveler";var n=document.createElement("span");n.className="travelerName";n.textContent=state.people[ix];
+  var ed=document.createElement("button");ed.type="button";ed.className="mini";ed.textContent="Edit";ed.onclick=function(){renameTraveler(ix)};
+  var rm=document.createElement("button");rm.type="button";rm.className="mini danger";rm.textContent="Remove";rm.onclick=function(){removeTraveler(ix)};
+  r.appendChild(n);r.appendChild(ed);r.appendChild(rm);b.appendChild(r)
+ })(i)}
+ var p=E("payer"),old=p.value;p.innerHTML='<option value="">Who paid?</option>';
+ for(i=0;i<state.people.length;i++){var o=document.createElement("option");o.value=state.people[i];o.textContent=state.people[i];p.appendChild(o)} if(state.people.indexOf(old)>=0)p.value=old;
  renderParticipants();save()
 }
-function addPerson(){
- var n=el("personName").value.trim();if(!n)return;
- for(var i=0;i<state.people.length;i++)if(state.people[i].toLowerCase()===n.toLowerCase()){alert("That person is already added.");return}
- state.people.push(n);el("personName").value="";renderPeople();el("personName").focus()
+function addTraveler(){
+ var n=E("travelerName").value.trim();if(!n)return;
+ for(var i=0;i<state.people.length;i++)if(state.people[i].toLowerCase()===n.toLowerCase()){alert("That traveler is already on the trip.");return}
+ state.people.push(n);E("travelerName").value="";renderTravelers();E("travelerName").focus()
 }
-function renderParticipants(){
- var box=el("participants");box.innerHTML="";
- for(var i=0;i<state.people.length;i++){
-  var row=document.createElement("div");row.className="person";
-  var c=document.createElement("input");c.type="checkbox";c.className="participant";c.value=state.people[i];c.checked=true;c.onchange=refreshTreat;
-  var n=document.createElement("span");n.className="grow";n.textContent=state.people[i];
-  row.appendChild(c);row.appendChild(n);box.appendChild(row)
+function renameTraveler(ix){
+ var old=state.people[ix],nu=prompt("Edit traveler's name:",old);if(nu===null)return;nu=nu.trim();if(!nu||nu===old)return;
+ for(var i=0;i<state.people.length;i++)if(i!==ix&&state.people[i].toLowerCase()===nu.toLowerCase()){alert("That name is already being used.");return}
+ state.people[ix]=nu;
+ for(i=0;i<state.expenses.length;i++){var e=state.expenses[i];if(e.payer===old)e.payer=nu;for(var j=0;j<e.participants.length;j++)if(e.participants[j]===old)e.participants[j]=nu;if(e.special===old)e.special=nu;if(e.extras&&Object.prototype.hasOwnProperty.call(e.extras,old)){e.extras[nu]=e.extras[old];delete e.extras[old]}}
+ renderTravelers();renderExpenses()
+}
+function removeTraveler(ix){
+ var name=state.people[ix],count=usedBy(name);
+ if(count){if(!confirm(name+" appears in "+count+" saved expense(s). Removing them will also remove them from those expenses. Continue?"))return;
+  for(var i=state.expenses.length-1;i>=0;i--){var e=state.expenses[i];if(e.payer===name){alert(name+" paid for a saved expense. Change or delete that expense before removing "+name+".");return}}
+  for(i=0;i<state.expenses.length;i++){e=state.expenses[i];e.participants=e.participants.filter(function(p){return p!==name});if(e.special===name){e.special="";e.extras={}}else if(e.extras)delete e.extras[name]}
  }
+ state.people.splice(ix,1);renderTravelers();renderExpenses()
+}
+function renderParticipants(chosen){
+ var b=E("participants");b.innerHTML="";chosen=chosen||state.people.slice();
+ for(var i=0;i<state.people.length;i++){var r=document.createElement("div");r.className="person";var c=document.createElement("input");c.type="checkbox";c.className="participant";c.value=state.people[i];c.checked=chosen.indexOf(state.people[i])>=0;c.onchange=refreshTreat;var n=document.createElement("span");n.className="grow";n.textContent=state.people[i];r.appendChild(c);r.appendChild(n);b.appendChild(r)}
  refreshTreat()
 }
 function refreshTreat(){
- var parts=selected(), old=el("treated").value, t=el("treated");t.innerHTML='<option value="">Choose person</option>';
- for(var i=0;i<parts.length;i++){var o=document.createElement("option");o.value=parts[i];o.textContent=parts[i];t.appendChild(o)}
- if(parts.indexOf(old)>=0)t.value=old;renderContributors()
+ var parts=selected(),old=E("treated").value,t=E("treated");t.innerHTML='<option value="">Choose traveler</option>';
+ for(var i=0;i<parts.length;i++){var o=document.createElement("option");o.value=parts[i];o.textContent=parts[i];t.appendChild(o)}if(parts.indexOf(old)>=0)t.value=old;renderContrib()
 }
-function renderContributors(){
- var parts=selected(), special=el("treated").value, amt=parseFloat(el("amount").value)||0;
- el("contributors").innerHTML="";el("suggestion").textContent="";el("coverage").textContent="";
- if(!special||parts.length<2)return;
- var share=amt/parts.length,suggested=share/(parts.length-1);
- el("suggestion").textContent=special+"'s normal share is "+money(share)+". Suggested extra: "+money(suggested)+" per other participant.";
- for(var i=0;i<parts.length;i++)if(parts[i]!==special){
-  var row=document.createElement("div");row.className="contrib";
-  var lab=document.createElement("label");lab.textContent=parts[i]+" extra";
-  var inp=document.createElement("input");inp.type="number";inp.inputMode="decimal";inp.min="0";inp.step=".01";inp.value=suggested.toFixed(2);inp.className="extra";inp.setAttribute("data-name",parts[i]);inp.oninput=updateCoverage;
-  row.appendChild(lab);row.appendChild(inp);el("contributors").appendChild(row)
- }
- updateCoverage()
+function renderContrib(existing){
+ var parts=selected(),sp=E("treated").value,amt=parseFloat(E("amount").value)||0;E("contributors").innerHTML="";E("suggestion").textContent="";E("coverage").textContent="";
+ if(!sp||parts.length<2)return;var share=amt/parts.length,sug=share/(parts.length-1);E("suggestion").textContent=sp+"'s normal share is "+money(share)+". Suggested extra: "+money(sug)+" per other traveler.";
+ for(var i=0;i<parts.length;i++)if(parts[i]!==sp){var r=document.createElement("div");r.className="contrib",l=document.createElement("label");l.textContent=parts[i]+" extra";var inp=document.createElement("input");inp.type="number";inp.inputMode="decimal";inp.min="0";inp.step=".01";inp.className="extra";inp.setAttribute("data-name",parts[i]);inp.value=(existing&&existing[parts[i]]!==undefined?existing[parts[i]]:sug).toFixed(2);inp.oninput=coverage;r.appendChild(l);r.appendChild(inp);E("contributors").appendChild(r)}coverage()
 }
-function updateCoverage(){
- var xs=document.querySelectorAll(".extra"),total=0;for(var i=0;i<xs.length;i++)total+=parseFloat(xs[i].value)||0;
- var parts=selected(),amt=parseFloat(el("amount").value)||0,share=parts.length?amt/parts.length:0;
- el("coverage").textContent=money(total)+" of "+money(share)+" covered"
+function coverage(){var x=document.querySelectorAll(".extra"),total=0;for(var i=0;i<x.length;i++)total+=parseFloat(x[i].value)||0;var p=selected(),amt=parseFloat(E("amount").value)||0,share=p.length?amt/p.length:0;E("coverage").textContent=money(total)+" of "+money(share)+" covered"}
+function clearExpenseForm(){editing=-1;E("description").value="";E("amount").value="";E("payer").value="";E("treatToggle").checked=false;E("treatArea").classList.add("hidden");E("editBanner").classList.add("hidden");E("cancelEdit").classList.add("hidden");E("saveExpense").textContent="Add expense";renderParticipants()}
+function saveExpense(){
+ var d=E("description").value.trim(),a=parseFloat(E("amount").value),payer=E("payer").value,parts=selected();if(!d||!(a>0)||!payer||!parts.length){alert("Please enter the expense, amount, payer and who should share it.");return}
+ var sp=E("treatToggle").checked?E("treated").value:"",extras={},xs=document.querySelectorAll(".extra");if(E("treatToggle").checked&&!sp){alert("Choose whose share is being covered.");return}for(var i=0;i<xs.length;i++)extras[xs[i].getAttribute("data-name")]=parseFloat(xs[i].value)||0;
+ var obj={description:d,amount:a,payer:payer,participants:parts,special:sp,extras:extras};if(editing>=0)state.expenses[editing]=obj;else state.expenses.push(obj);clearExpenseForm();renderExpenses();save()
 }
-function addExpense(){
- var desc=el("description").value.trim(),amount=parseFloat(el("amount").value),payer=el("payer").value,parts=selected();
- if(!desc||!(amount>0)||!payer||!parts.length){alert("Please enter an expense, amount, payer and at least one participant.");return}
- var special=el("treatToggle").checked?el("treated").value:"",extras={},xs=document.querySelectorAll(".extra");
- if(el("treatToggle").checked&&!special){alert("Choose the person whose share is being covered.");return}
- for(var i=0;i<xs.length;i++)extras[xs[i].getAttribute("data-name")]=parseFloat(xs[i].value)||0;
- state.expenses.push({description:desc,amount:amount,payer:payer,participants:parts,special:special,extras:extras});
- el("description").value="";el("amount").value="";el("payer").value="";el("treatToggle").checked=false;el("treatArea").style.display="none";
- renderExpenses();renderParticipants();save()
+function editExpense(ix){
+ editing=ix;var e=state.expenses[ix];E("description").value=e.description;E("amount").value=e.amount;E("payer").value=e.payer;renderParticipants(e.participants);E("treatToggle").checked=!!e.special;E("treatArea").classList.toggle("hidden",!e.special);if(e.special){E("treated").value=e.special;renderContrib(e.extras||{})}E("editBanner").classList.remove("hidden");E("cancelEdit").classList.remove("hidden");E("saveExpense").textContent="Save changes";window.scrollTo({top:E("editBanner").getBoundingClientRect().top+window.pageYOffset-20,behavior:"smooth"})
 }
 function renderExpenses(){
- var box=el("expenses");box.innerHTML="";
- if(!state.expenses.length){box.className="empty";box.textContent="No expenses yet.";return}
- box.className="";
- for(var i=0;i<state.expenses.length;i++){(function(ix){
-  var e=state.expenses[ix],d=document.createElement("div");d.className="expense";
-  var top=document.createElement("div");top.className="expenseTop";
-  var info=document.createElement("div"),title=document.createElement("strong");title.textContent=e.description+" — "+money(e.amount);
-  var detail=document.createElement("div");detail.className="hint";detail.textContent=e.payer+" paid · "+e.participants.join(", ")+(e.special?" · 🎁 extras toward "+e.special:"");
-  info.appendChild(title);info.appendChild(document.createElement("br"));info.appendChild(detail);
-  var del=document.createElement("button");del.type="button";del.className="mini danger";del.textContent="Delete";del.onclick=function(){state.expenses.splice(ix,1);renderExpenses();save()};
-  top.appendChild(info);top.appendChild(del);d.appendChild(top);box.appendChild(d)
- })(i)}
+ var b=E("expenses");b.innerHTML="";if(!state.expenses.length){b.className="empty";b.textContent="No expenses yet.";return}b.className="";
+ for(var i=0;i<state.expenses.length;i++){(function(ix){var e=state.expenses[ix],r=document.createElement("div");r.className="expense";var top=document.createElement("div");top.className="expenseTop";var info=document.createElement("div"),title=document.createElement("strong");title.textContent=e.description+" — "+money(e.amount);var det=document.createElement("div");det.className="hint";det.textContent=e.payer+" paid · Shared by: "+e.participants.join(", ")+(e.special?" · 🎁 extras toward "+e.special:"");info.appendChild(title);info.appendChild(document.createElement("br"));info.appendChild(det);var acts=document.createElement("div");acts.className="actions";var ed=document.createElement("button");ed.type="button";ed.className="mini";ed.textContent="Edit";ed.onclick=function(){editExpense(ix)};var del=document.createElement("button");del.type="button";del.className="mini danger";del.textContent="Delete";del.onclick=function(){if(confirm("Delete "+e.description+"?")){state.expenses.splice(ix,1);if(editing===ix)clearExpenseForm();renderExpenses();save()}};acts.appendChild(ed);acts.appendChild(del);top.appendChild(info);top.appendChild(acts);r.appendChild(top);b.appendChild(r)})(i)}
 }
 function calculate(){
  var bal={};for(var p=0;p<state.people.length;p++)bal[state.people[p]]=0;
- for(var k=0;k<state.expenses.length;k++){
-  var e=state.expenses[k];bal[e.payer]+=e.amount;var share=e.amount/e.participants.length,covered=0,totalExtra=0;
-  if(e.special){for(var x in e.extras)totalExtra+=e.extras[x];covered=Math.min(totalExtra,share)}
-  for(var j=0;j<e.participants.length;j++){
-   var person=e.participants[j],owed=share;
-   if(person===e.special)owed=share-covered;
-   else if(e.special&&covered>0&&totalExtra>0)owed+=(e.extras[person]||0)*(covered/totalExtra);
-   bal[person]-=owed
-  }
- }
- var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}
- var lines=[],i=0,j=0;while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]);lines.push(debt[i][0]+" pays "+cred[j][0]+" "+money(v));debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}
- var title=el("trip").value.trim()||"Trip";el("result").textContent=title+" — Final Split\n\n"+(lines.length?lines.join("\n"):"Everyone is settled up!");save()
+ for(var k=0;k<state.expenses.length;k++){var e=state.expenses[k];if(!e.participants.length)continue;bal[e.payer]+=e.amount;var share=e.amount/e.participants.length,covered=0,total=0;if(e.special){for(var x in e.extras)total+=e.extras[x];covered=Math.min(total,share)}
+  for(var j=0;j<e.participants.length;j++){var person=e.participants[j],owed=share;if(person===e.special)owed=share-covered;else if(e.special&&covered>0&&total>0)owed+=(e.extras[person]||0)*(covered/total);bal[person]-=owed}}
+ var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}var lines=[],i=0,j=0;while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]);lines.push(debt[i][0]+" pays "+cred[j][0]+" "+money(v));debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}E("result").textContent=(E("trip").value.trim()||"Trip")+" — Final Split\n\n"+(lines.length?lines.join("\n"):"Everyone is settled up!");save()
 }
-el("addPerson").onclick=addPerson;
-el("personName").onkeydown=function(e){e=e||window.event;if(e.key==="Enter"||e.keyCode===13){if(e.preventDefault)e.preventDefault();addPerson();return false}};
-el("amount").oninput=renderContributors;el("treated").onchange=renderContributors;
-el("treatToggle").onchange=function(){el("treatArea").style.display=this.checked?"block":"none";refreshTreat()};
-el("addExpense").onclick=addExpense;el("calculate").onclick=calculate;el("trip").oninput=save;
-el("copy").onclick=function(){var t=el("result").textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert("Copied!")});else alert("Press and hold the result to copy.")};
-load();renderPeople();renderExpenses()
+E("addTraveler").onclick=addTraveler;E("travelerName").onkeydown=function(e){e=e||window.event;if(e.key==="Enter"||e.keyCode===13){if(e.preventDefault)e.preventDefault();addTraveler();return false}};
+E("amount").oninput=function(){renderContrib()};E("treated").onchange=function(){renderContrib()};E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};
+E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearExpenseForm;E("calculate").onclick=calculate;E("trip").oninput=save;
+E("copy").onclick=function(){var t=E("result").textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert("Copied!")});else alert("Press and hold the result to copy.")};
+load();renderTravelers();renderExpenses()
 })();
-</script>
-</body></html>
+</script></body></html>

@@ -2,97 +2,163 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Trip Split - People Test</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Girl Split the Bill</title>
+<meta name="description" content="A simple group trip expense splitter for different participants and special-person contributions.">
 <style>
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f6f7fb;margin:0;color:#172033}
-main{max-width:650px;margin:auto;padding:18px}
-.card{background:white;border:1px solid #e6e8ef;border-radius:18px;padding:18px;margin:14px 0}
-h1{margin-bottom:5px}.muted{color:#667085;font-size:14px}
-input,button{font:inherit;padding:12px;border-radius:11px;border:1px solid #cfd4df}
-.addrow{display:flex;gap:8px;margin-top:14px}
-.addrow input{flex:1;min-width:0}
-button{background:#5b5bd6;color:white;border:none;font-weight:700;cursor:pointer}
-.person{display:flex;justify-content:space-between;align-items:center;padding:12px 2px;border-bottom:1px solid #e6e8ef}
-.remove{background:white;color:#a33;border:1px solid #ddd;padding:6px 10px}
-.count{margin-top:12px;font-weight:650}
+:root{--bg:#fff8fb;--card:#fff;--ink:#2d2330;--muted:#756b75;--accent:#c83f75;--accent2:#9e2f5c;--soft:#fde8f0;--line:#eadfe4;--gold:#fff6dd;--green:#217653}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:720px;margin:auto;padding:18px 14px 50px}.hero{text-align:center;padding:10px 8px}h1{margin:4px 0;font-size:30px}h2{font-size:19px;margin:0 0 13px}
+.sub,.hint{color:var(--muted);font-size:14px;line-height:1.45}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:17px;margin:14px 0;box-shadow:0 5px 20px rgba(70,30,50,.05)}
+input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;padding:12px;background:#fff;color:var(--ink)}button{cursor:pointer}.primary{background:var(--accent);color:#fff;border:0;font-weight:700}.primary:active{background:var(--accent2)}
+.wide{width:100%}.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}.pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.pill{background:var(--soft);border-radius:999px;padding:7px 10px}
+.person{display:flex;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.person:last-child{border:0}.person input[type=checkbox]{width:21px;height:21px;accent-color:var(--accent)}.grow{flex:1;font-weight:600}
+.special{background:var(--gold);border:1px solid #eddca6;border-radius:14px;padding:12px;margin-top:13px}.contrib{display:grid;grid-template-columns:1fr 105px;gap:8px;align-items:center;margin-top:8px}.coverage{margin-top:9px;font-weight:650;color:var(--green)}
+.expense{padding:12px 0;border-bottom:1px solid var(--line)}.expense:last-child{border:0}.expenseTop{display:flex;justify-content:space-between;gap:8px}.mini{padding:6px 9px;font-size:12px}.danger{color:#a52f53;background:#fff}
+.result{white-space:pre-wrap;background:#f8f5f7;border-radius:12px;padding:14px;line-height:1.65;margin-top:12px}.empty{color:var(--muted);font-size:14px}
+@media(max-width:520px){.stack{display:block}.stack>*{width:100%;margin-top:8px}}
 </style>
 </head>
-<body>
-<main>
-<h1>Trip Split ✈️</h1>
-<div class="muted">Let's test adding people before we build the rest.</div>
+<body><main>
+<div class="hero"><h1>Girl Split the Bill 💕</h1><div class="sub">Different people, different expenses, one easy final split.</div></div>
+
 <section class="card">
-<label for="trip"><b>Trip name</b></label><br>
-<input id="trip" style="width:100%;box-sizing:border-box;margin-top:6px" placeholder="Napa Weekend">
+<h2>1. Trip & people</h2>
+<input id="trip" class="wide" placeholder="Trip name (e.g. Napa Weekend)">
+<div class="row" style="margin-top:10px"><input id="personName" placeholder="Person's name"><button id="addPerson" type="button" class="primary">+ Add</button></div>
+<div id="people" class="pills"></div>
+</section>
 
-<div class="addrow">
-<input id="name" placeholder="Person's name">
-<button id="add" type="button">+ Add</button>
+<section class="card">
+<h2>2. Add an expense</h2>
+<div class="row stack"><input id="description" placeholder="Expense (Dinner)"><input id="amount" type="number" inputmode="decimal" min="0" step=".01" placeholder="Amount"></div>
+<select id="payer" class="wide" style="margin-top:9px"><option value="">Who paid?</option></select>
+<p class="hint">Who participated? Everyone is selected by default.</p>
+<div id="participants"></div>
+
+<div class="special">
+<label><input id="treatToggle" type="checkbox"> 🎁 Help cover someone's share</label>
+<div id="treatArea" style="display:none;margin-top:10px">
+<select id="treated" class="wide"><option value="">Choose person</option></select>
+<div id="suggestion" class="hint" style="margin-top:8px"></div>
+<div id="contributors"></div>
+<div id="coverage" class="coverage"></div>
 </div>
+</div>
+<button id="addExpense" type="button" class="primary wide" style="margin-top:13px">Add expense</button>
+</section>
 
-<div id="count" class="count">0 people added</div>
-<div id="list"></div>
+<section class="card"><h2>3. Expenses</h2><div id="expenses" class="empty">No expenses yet.</div></section>
+
+<section class="card">
+<h2>4. Final split</h2>
+<div class="row"><button id="calculate" type="button" class="primary">Calculate</button><button id="copy" type="button">Copy text</button></div>
+<div id="result" class="result">Your settlement will appear here.</div>
 </section>
 </main>
 
 <script>
 (function(){
-  var people = [];
-  var nameInput = document.getElementById("name");
-  var addButton = document.getElementById("add");
-  var list = document.getElementById("list");
-  var count = document.getElementById("count");
+var state={trip:"",people:[],expenses:[]};
+function el(id){return document.getElementById(id)}
+function money(n){return "$"+Number(n).toFixed(2)}
+function save(){state.trip=el("trip").value;localStorage.setItem("girlSplitState",JSON.stringify(state))}
+function load(){try{var s=JSON.parse(localStorage.getItem("girlSplitState"));if(s&&s.people&&s.expenses)state=s}catch(e){}el("trip").value=state.trip||""}
+function selected(){var a=[],b=document.querySelectorAll(".participant");for(var i=0;i<b.length;i++)if(b[i].checked)a.push(b[i].value);return a}
 
-  function render(){
-    list.innerHTML = "";
-    for(var i=0;i<people.length;i++){
-      (function(index){
-        var row = document.createElement("div");
-        row.className = "person";
-        var label = document.createElement("span");
-        label.textContent = people[index];
-        var remove = document.createElement("button");
-        remove.type = "button";
-        remove.className = "remove";
-        remove.textContent = "Remove";
-        remove.onclick = function(){
-          people.splice(index,1);
-          render();
-        };
-        row.appendChild(label);
-        row.appendChild(remove);
-        list.appendChild(row);
-      })(i);
-    }
-    count.textContent = people.length + (people.length===1 ? " person added" : " people added");
+function renderPeople(){
+ var box=el("people");box.innerHTML="";
+ for(var i=0;i<state.people.length;i++){var s=document.createElement("span");s.className="pill";s.textContent=state.people[i];box.appendChild(s)}
+ var payer=el("payer");payer.innerHTML='<option value="">Who paid?</option>';
+ for(i=0;i<state.people.length;i++){var o=document.createElement("option");o.value=state.people[i];o.textContent=state.people[i];payer.appendChild(o)}
+ renderParticipants();save()
+}
+function addPerson(){
+ var n=el("personName").value.trim();if(!n)return;
+ for(var i=0;i<state.people.length;i++)if(state.people[i].toLowerCase()===n.toLowerCase()){alert("That person is already added.");return}
+ state.people.push(n);el("personName").value="";renderPeople();el("personName").focus()
+}
+function renderParticipants(){
+ var box=el("participants");box.innerHTML="";
+ for(var i=0;i<state.people.length;i++){
+  var row=document.createElement("div");row.className="person";
+  var c=document.createElement("input");c.type="checkbox";c.className="participant";c.value=state.people[i];c.checked=true;c.onchange=refreshTreat;
+  var n=document.createElement("span");n.className="grow";n.textContent=state.people[i];
+  row.appendChild(c);row.appendChild(n);box.appendChild(row)
+ }
+ refreshTreat()
+}
+function refreshTreat(){
+ var parts=selected(), old=el("treated").value, t=el("treated");t.innerHTML='<option value="">Choose person</option>';
+ for(var i=0;i<parts.length;i++){var o=document.createElement("option");o.value=parts[i];o.textContent=parts[i];t.appendChild(o)}
+ if(parts.indexOf(old)>=0)t.value=old;renderContributors()
+}
+function renderContributors(){
+ var parts=selected(), special=el("treated").value, amt=parseFloat(el("amount").value)||0;
+ el("contributors").innerHTML="";el("suggestion").textContent="";el("coverage").textContent="";
+ if(!special||parts.length<2)return;
+ var share=amt/parts.length,suggested=share/(parts.length-1);
+ el("suggestion").textContent=special+"'s normal share is "+money(share)+". Suggested extra: "+money(suggested)+" per other participant.";
+ for(var i=0;i<parts.length;i++)if(parts[i]!==special){
+  var row=document.createElement("div");row.className="contrib";
+  var lab=document.createElement("label");lab.textContent=parts[i]+" extra";
+  var inp=document.createElement("input");inp.type="number";inp.inputMode="decimal";inp.min="0";inp.step=".01";inp.value=suggested.toFixed(2);inp.className="extra";inp.setAttribute("data-name",parts[i]);inp.oninput=updateCoverage;
+  row.appendChild(lab);row.appendChild(inp);el("contributors").appendChild(row)
+ }
+ updateCoverage()
+}
+function updateCoverage(){
+ var xs=document.querySelectorAll(".extra"),total=0;for(var i=0;i<xs.length;i++)total+=parseFloat(xs[i].value)||0;
+ var parts=selected(),amt=parseFloat(el("amount").value)||0,share=parts.length?amt/parts.length:0;
+ el("coverage").textContent=money(total)+" of "+money(share)+" covered"
+}
+function addExpense(){
+ var desc=el("description").value.trim(),amount=parseFloat(el("amount").value),payer=el("payer").value,parts=selected();
+ if(!desc||!(amount>0)||!payer||!parts.length){alert("Please enter an expense, amount, payer and at least one participant.");return}
+ var special=el("treatToggle").checked?el("treated").value:"",extras={},xs=document.querySelectorAll(".extra");
+ if(el("treatToggle").checked&&!special){alert("Choose the person whose share is being covered.");return}
+ for(var i=0;i<xs.length;i++)extras[xs[i].getAttribute("data-name")]=parseFloat(xs[i].value)||0;
+ state.expenses.push({description:desc,amount:amount,payer:payer,participants:parts,special:special,extras:extras});
+ el("description").value="";el("amount").value="";el("payer").value="";el("treatToggle").checked=false;el("treatArea").style.display="none";
+ renderExpenses();renderParticipants();save()
+}
+function renderExpenses(){
+ var box=el("expenses");box.innerHTML="";
+ if(!state.expenses.length){box.className="empty";box.textContent="No expenses yet.";return}
+ box.className="";
+ for(var i=0;i<state.expenses.length;i++){(function(ix){
+  var e=state.expenses[ix],d=document.createElement("div");d.className="expense";
+  var top=document.createElement("div");top.className="expenseTop";
+  var info=document.createElement("div"),title=document.createElement("strong");title.textContent=e.description+" — "+money(e.amount);
+  var detail=document.createElement("div");detail.className="hint";detail.textContent=e.payer+" paid · "+e.participants.join(", ")+(e.special?" · 🎁 extras toward "+e.special:"");
+  info.appendChild(title);info.appendChild(document.createElement("br"));info.appendChild(detail);
+  var del=document.createElement("button");del.type="button";del.className="mini danger";del.textContent="Delete";del.onclick=function(){state.expenses.splice(ix,1);renderExpenses();save()};
+  top.appendChild(info);top.appendChild(del);d.appendChild(top);box.appendChild(d)
+ })(i)}
+}
+function calculate(){
+ var bal={};for(var p=0;p<state.people.length;p++)bal[state.people[p]]=0;
+ for(var k=0;k<state.expenses.length;k++){
+  var e=state.expenses[k];bal[e.payer]+=e.amount;var share=e.amount/e.participants.length,covered=0,totalExtra=0;
+  if(e.special){for(var x in e.extras)totalExtra+=e.extras[x];covered=Math.min(totalExtra,share)}
+  for(var j=0;j<e.participants.length;j++){
+   var person=e.participants[j],owed=share;
+   if(person===e.special)owed=share-covered;
+   else if(e.special&&covered>0&&totalExtra>0)owed+=(e.extras[person]||0)*(covered/totalExtra);
+   bal[person]-=owed
   }
-
-  function addPerson(){
-    var n = nameInput.value.replace(/^\s+|\s+$/g,"");
-    if(!n){ nameInput.focus(); return; }
-    for(var i=0;i<people.length;i++){
-      if(people[i].toLowerCase()===n.toLowerCase()){
-        alert(n+" is already added.");
-        return;
-      }
-    }
-    people.push(n);
-    nameInput.value = "";
-    render();
-    nameInput.focus();
-  }
-
-  addButton.onclick = addPerson;
-  nameInput.onkeydown = function(e){
-    e = e || window.event;
-    if(e.key === "Enter" || e.keyCode === 13){
-      if(e.preventDefault)e.preventDefault();
-      addPerson();
-      return false;
-    }
-  };
+ }
+ var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}
+ var lines=[],i=0,j=0;while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]);lines.push(debt[i][0]+" pays "+cred[j][0]+" "+money(v));debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}
+ var title=el("trip").value.trim()||"Trip";el("result").textContent=title+" — Final Split\n\n"+(lines.length?lines.join("\n"):"Everyone is settled up!");save()
+}
+el("addPerson").onclick=addPerson;
+el("personName").onkeydown=function(e){e=e||window.event;if(e.key==="Enter"||e.keyCode===13){if(e.preventDefault)e.preventDefault();addPerson();return false}};
+el("amount").oninput=renderContributors;el("treated").onchange=renderContributors;
+el("treatToggle").onchange=function(){el("treatArea").style.display=this.checked?"block":"none";refreshTreat()};
+el("addExpense").onclick=addExpense;el("calculate").onclick=calculate;el("trip").oninput=save;
+el("copy").onclick=function(){var t=el("result").textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert("Copied!")});else alert("Press and hold the result to copy.")};
+load();renderPeople();renderExpenses()
 })();
 </script>
-</body>
-</html>
+</body></html>

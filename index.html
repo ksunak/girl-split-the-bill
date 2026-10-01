@@ -20,7 +20,16 @@ input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;pad
 .editBanner{background:var(--soft);padding:9px 11px;border-radius:10px;margin-bottom:10px;font-size:14px;font-weight:650}.result{white-space:pre-wrap;background:#f8f5f7;border-radius:12px;padding:14px;line-height:1.65;margin-top:12px}.empty{color:var(--muted);font-size:14px}
 .mode{display:flex;gap:18px;margin-top:7px}.mode label{display:flex;align-items:center;gap:5px}.mode input{accent-color:var(--accent)}
 @media(max-width:520px){.stack{display:block}.stack>*{width:100%;margin-top:8px}.expenseTop{display:block}.actions{margin-top:8px}}
-</style></head>
+</style><!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XSCHGNVVPE"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-XSCHGNVVPE');
+function trackEvent(name){if(typeof gtag==='function')gtag('event',name);}
+</script>
+</head>
 <body><main>
 <header class="hero">
 <h1>Girl Split the Bill 💕</h1>
@@ -142,9 +151,9 @@ function calculate(){var bal={};for(var p=0;p<state.people.length;p++)bal[state.
 
 E("addTraveler").onclick=addTraveler;E("travelerName").onkeydown=function(e){if((e||window.event).keyCode===13){if(e.preventDefault)e.preventDefault();addTraveler();return false}};
 E("payer").onchange=function(){E("venmo").value=state.venmo[this.value]||""};E("amount").oninput=function(){renderCustom();renderTreat()};E("tip").oninput=function(){renderCustom();renderTreat()};E("equalMode").onchange=function(){renderCustom();renderTreat()};E("customMode").onchange=function(){renderCustom();renderTreat()};E("treated").onchange=function(){renderTreat()};
-E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("calculate").onclick=calculate;E("trip").oninput=save;
+E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("calculate").onclick=function(){trackEvent("calculate_split");calculate()};E("trip").oninput=save;
 E("copy").onclick=function(){var t=E("result").textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert("Copied!")});else alert("Press and hold the result to copy.")};
-E("share").onclick=async function(){
+E("share").onclick=async function(){trackEvent("share_summary");
  var body=E("result").textContent;
  if(body==="Your settlement will appear here."){alert("Calculate the final split first.");return}
  var trip=E("trip").value.trim();

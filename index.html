@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Girl Split the Bill – Group Trip Expense Splitter</title>
+<title>Group Trip Expense Calculator | Girl Split the Bill</title>
 <meta name="description" content="Add multiple trip expenses, choose who shared each one, split equally or use custom shares, add tip, and cover someone special.">
 <meta name="robots" content="index,follow">
 <style>
@@ -20,6 +20,16 @@ input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;pad
 .editBanner{background:var(--soft);padding:9px 11px;border-radius:10px;margin-bottom:10px;font-size:14px;font-weight:650}.result{white-space:pre-wrap;background:#f8f5f7;border-radius:12px;padding:14px;line-height:1.65;margin-top:12px}.empty{color:var(--muted);font-size:14px}
 .mode{display:flex;gap:18px;margin-top:7px}.mode label{display:flex;align-items:center;gap:5px}.mode input{accent-color:var(--accent)}
 @media(max-width:520px){.stack{display:block}.stack>*{width:100%;margin-top:8px}.expenseTop{display:block}.actions{margin-top:8px}}
+
+.seo-content{max-width:760px;margin:34px auto 12px;padding:0 4px;color:#3f3740}
+.seo-content h2{font-size:1.45rem;margin:28px 0 10px;color:#2e2730}
+.seo-content h3{font-size:1.05rem;margin:20px 0 6px;color:#2e2730}
+.seo-content p{line-height:1.65;margin:8px 0}
+.seo-content ol{padding-left:22px;line-height:1.65}
+.seo-content details{border-top:1px solid #eadfe6;padding:13px 0}
+.seo-content details:last-child{border-bottom:1px solid #eadfe6}
+.seo-content summary{font-weight:700;cursor:pointer}
+.seo-content details p{margin:8px 0 2px}
 </style><!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XSCHGNVVPE"></script>
 <script>
@@ -83,6 +93,57 @@ function trackEvent(name){if(typeof gtag==='function')gtag('event',name);}
   <button id="share" type="button">Share Summary</button>
 </div></section>
 </main>
+
+
+<section class="seo-content" aria-label="About Girl Split the Bill">
+  <h2>Split group expenses without the spreadsheet</h2>
+  <p><strong>Girl Split the Bill</strong> is a free group trip expense calculator for vacations, birthday trips, dinners, bachelorette weekends and other shared events. Add multiple expenses, choose who actually participated in each one, include tips, use custom shares when needed, and calculate who owes whom at the end.</p>
+
+  <h2>How it works</h2>
+  <ol>
+    <li>Add the travelers on your trip or event.</li>
+    <li>Add each expense and choose who paid.</li>
+    <li>Select only the people who shared that expense.</li>
+    <li>Use an equal split or enter custom shares when someone owes a different amount.</li>
+    <li>Calculate the final split, then copy or share the summary.</li>
+  </ol>
+
+  <h2>Made for real group trips</h2>
+  <p>Not everyone does everything on a group trip. One person may join dinner but skip breakfast, while someone else does the opposite. Girl Split the Bill lets you choose participants separately for every expense, so people are only included in the costs they actually shared.</p>
+  <p>Celebrating a birthday or someone special? You can also help cover that person's share and adjust how much each traveler contributes toward the treat.</p>
+
+  <h2>Frequently asked questions</h2>
+
+  <details>
+    <summary>Can different people participate in different expenses?</summary>
+    <p>Yes. Every expense has its own participant list, so you can include only the travelers who actually shared that cost.</p>
+  </details>
+
+  <details>
+    <summary>What if everyone ordered different amounts?</summary>
+    <p>Choose a custom split and enter each participant's share instead of dividing the bill equally.</p>
+  </details>
+
+  <details>
+    <summary>Can one person pay for the whole dinner?</summary>
+    <p>Yes. Select the person who paid, choose everyone who shared the dinner, and the final calculation will account for what that payer is owed.</p>
+  </details>
+
+  <details>
+    <summary>Can we cover someone's share for a birthday or special occasion?</summary>
+    <p>Yes. Use the treat-someone option to choose the person being celebrated and adjust the suggested extra contribution from the other travelers.</p>
+  </details>
+
+  <details>
+    <summary>Can I add a tip?</summary>
+    <p>Yes. If the tip is not already included in the bill amount, add it separately and it will be included in the expense total.</p>
+  </details>
+
+  <details>
+    <summary>Can I share the final split with the group?</summary>
+    <p>Yes. After calculating the final split, use Copy Summary or Share Summary to send a concise message showing who owes whom. If a recipient's Venmo was entered, it can appear with the amount owed.</p>
+  </details>
+</section>
 
 <script>
 (function(){

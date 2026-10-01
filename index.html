@@ -3,50 +3,75 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Group Trip Expense Calculator | Girl Split the Bill</title>
+<title>Girl Split the Bill – Group Trip Expense Splitter</title>
 <meta name="description" content="Add multiple trip expenses, choose who shared each one, split equally or use custom shares, add tip, and cover someone special.">
 <meta name="robots" content="index,follow">
 <style>
-:root{--bg:#fff8fb;--card:#fff;--ink:#2d2330;--muted:#756b75;--accent:#c83f75;--soft:#fde8f0;--line:#eadfe4;--gold:#fff6dd;--green:#217653}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-main{max-width:720px;margin:auto;padding:18px 14px 50px}.hero{text-align:center;padding:10px 8px 2px}.hero p{max-width:640px;margin:8px auto;line-height:1.5}
-h1{margin:4px 0;font-size:30px}h2{font-size:19px;margin:0 0 13px}.sub,.hint{color:var(--muted);font-size:14px;line-height:1.45}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:17px;margin:14px 0;box-shadow:0 5px 20px rgba(70,30,50,.05)}
-input,select,button{font:inherit;border-radius:11px;border:1px solid #d8cdd2;padding:12px;background:#fff;color:var(--ink)}button{cursor:pointer}.primary{background:var(--accent);color:#fff;border:0;font-weight:700}.wide{width:100%}
-.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}.traveler,.person{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}.traveler:last-child,.person:last-child{border:0}.travelerName,.grow{flex:1;font-weight:650}
-.person input[type=checkbox]{width:21px;height:21px;accent-color:var(--accent)}.special{background:var(--gold);border:1px solid #eddca6;border-radius:14px;padding:12px;margin-top:13px}
-.contrib{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center;margin-top:8px}.coverage,.ok{margin-top:9px;font-weight:650;color:var(--green)}
-.expense{padding:12px 0;border-bottom:1px solid var(--line)}.expense:last-child{border:0}.expenseTop{display:flex;justify-content:space-between;gap:10px}.actions{display:flex;gap:5px;align-items:flex-start}.mini{padding:6px 9px;font-size:12px}.danger{color:#a52f53}.hidden{display:none!important}
-.editBanner{background:var(--soft);padding:9px 11px;border-radius:10px;margin-bottom:10px;font-size:14px;font-weight:650}.result{white-space:pre-wrap;background:#f8f5f7;border-radius:12px;padding:14px;line-height:1.65;margin-top:12px}.empty{color:var(--muted);font-size:14px}
-.mode{display:flex;gap:18px;margin-top:7px}.mode label{display:flex;align-items:center;gap:5px}.mode input{accent-color:var(--accent)}
-@media(max-width:520px){.stack{display:block}.stack>*{width:100%;margin-top:8px}.expenseTop{display:block}.actions{margin-top:8px}}
-
-.seo-content{max-width:760px;margin:34px auto 12px;padding:0 4px;color:#3f3740}
-.seo-content h2{font-size:1.45rem;margin:28px 0 10px;color:#2e2730}
-.seo-content h3{font-size:1.05rem;margin:20px 0 6px;color:#2e2730}
-.seo-content p{line-height:1.65;margin:8px 0}
-.seo-content ol{padding-left:22px;line-height:1.65}
-.seo-content details{border-top:1px solid #eadfe6;padding:13px 0}
-.seo-content details:last-child{border-bottom:1px solid #eadfe6}
-.seo-content summary{font-weight:700;cursor:pointer}
-.seo-content details p{margin:8px 0 2px}
-</style><!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XSCHGNVVPE"></script>
-<script>
-window.dataLayer=window.dataLayer||[];
-function gtag(){dataLayer.push(arguments);}
-gtag('js',new Date());
-gtag('config','G-XSCHGNVVPE');
-function trackEvent(name){if(typeof gtag==='function')gtag('event',name);}
-</script>
-</head>
+:root{
+  --bg:#fff9fb;--card:#ffffff;--ink:#2d2330;--muted:#756b75;
+  --accent:#c83f75;--accent-dark:#a92f61;--soft:#fde8f0;
+  --line:#eadfe4;--gold:#fff7df;--green:#217653;--shadow:0 10px 30px rgba(83,39,61,.07)
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:
+  radial-gradient(circle at top left,#fff0f6 0,transparent 34%),
+  linear-gradient(180deg,#fffafb 0,#fff8fb 100%);
+  color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+main{max-width:760px;margin:auto;padding:24px 16px 54px}
+.hero{text-align:center;padding:28px 12px 18px}
+.brandPill{
+  display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);
+  border-radius:999px;padding:7px 12px;color:var(--accent-dark);font-size:12px;font-weight:750;
+  letter-spacing:.02em;box-shadow:0 4px 14px rgba(83,39,61,.04);margin-bottom:12px
+}
+h1{margin:5px 0 10px;font-size:clamp(34px,7vw,46px);line-height:1.05;letter-spacing:-.035em}
+.hero .lead{font-size:17px;line-height:1.5;max-width:620px;margin:12px auto 8px}
+.hero p{max-width:640px;margin:8px auto;line-height:1.55}
+.sub,.hint{color:var(--muted);font-size:14px;line-height:1.5}
+.trustRow{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:16px}
+.trustRow span{background:var(--soft);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:700;color:#82425f}
+.card{
+  background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:20px;padding:19px;
+  margin:15px 0;box-shadow:var(--shadow)
+}
+h2{font-size:20px;margin:0 0 14px;letter-spacing:-.01em}
+input,select,button{
+  font:inherit;border-radius:12px;border:1px solid #d8cdd2;padding:12px;background:#fff;color:var(--ink)
+}
+input:focus,select:focus{outline:3px solid rgba(200,63,117,.12);border-color:#cf6b93}
+button{cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
+button:active{transform:translateY(1px)}
+.primary{
+  background:linear-gradient(135deg,var(--accent),#b93469);color:#fff;border:0;font-weight:750;
+  box-shadow:0 5px 13px rgba(200,63,117,.18)
+}
+.wide{width:100%}
+.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
+.traveler,.person{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.traveler:last-child,.person:last-child{border:0}.travelerName,.grow{flex:1;font-weight:650}
+.person input[type=checkbox]{width:21px;height:21px;accent-color:var(--accent)}
+.special{background:var(--gold);border:1px solid #eddca6;border-radius:15px;padding:13px;margin-top:14px}
+.contrib{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center;margin-top:8px}
+.coverage,.ok{margin-top:9px;font-weight:650;color:var(--green)}
+.expense{padding:13px 0;border-bottom:1px solid var(--line)}.expense:last-child{border:0}
+.expenseTop{display:flex;justify-content:space-between;gap:10px}
+.actions{display:flex;gap:5px;align-items:flex-start}.mini{padding:6px 9px;font-size:12px}.danger{color:#a52f53}
+.hidden{display:none!important}.editBanner{background:var(--soft);padding:9px 11px;border-radius:10px;margin-bottom:10px;font-size:14px;font-weight:650}
+.result{white-space:pre-wrap;background:#faf7f9;border:1px solid #eee4e9;border-radius:14px;padding:15px;line-height:1.65;margin-top:12px}
+.empty{color:var(--muted);font-size:14px}.mode{display:flex;gap:18px;margin-top:7px}.mode label{display:flex;align-items:center;gap:5px}.mode input{accent-color:var(--accent)}
+.siteFooter{text-align:center;margin:28px 0 4px;color:var(--muted);font-size:13px}
+.siteFooter a{color:var(--accent-dark);font-weight:700;text-decoration:none}.siteFooter a:hover{text-decoration:underline}
+@media(max-width:520px){main{padding:16px 12px 40px}.hero{padding:24px 7px 12px}.stack{display:block}.stack>*{width:100%;margin-top:8px}.expenseTop{display:block}.actions{margin-top:8px}.card{padding:16px}}
+</style></head>
 <body><main>
 <header class="hero">
+<div class="brandPill">✨ SIMPLE GROUP SPLITS</div>
 <h1>Girl Split the Bill 💕</h1>
-<p><strong>The easy way to split group trip expenses when everyone isn't doing everything.</strong></p>
-<p class="sub">Add multiple expenses, select who actually shared each one, and we'll figure out who owes whom. Add a tip when it isn't already included, or use a custom split when someone's share should be different.</p>
-<p class="sub">Celebrating someone special? You can help cover their share, and we'll suggest an extra contribution for each of the other travelers.</p>
-<p class="sub"><strong>No sign-up. No complicated spreadsheets. Just add, split, and share.</strong></p>
+<p class="lead"><strong>The easy way to split group expenses when everyone isn't doing everything.</strong></p>
+<p class="sub">Add each expense, choose who actually shared it, and we'll handle who owes whom. Split evenly, customize shares, add a tip, or help cover someone special.</p>
+<div class="trustRow"><span>No sign-up</span><span>No spreadsheet</span><span>No account needed</span></div>
 </header>
 
 <section class="card">
@@ -92,58 +117,9 @@ function trackEvent(name){if(typeof gtag==='function')gtag('event',name);}
   <button id="copy" type="button">Copy Summary</button>
   <button id="share" type="button">Share Summary</button>
 </div></section>
+
+<footer class="siteFooter">Girl Split the Bill 💕 &nbsp;·&nbsp; <a href="/about.html">About</a></footer>
 </main>
-
-
-<section class="seo-content" aria-label="About Girl Split the Bill">
-  <h2>Split group expenses without the spreadsheet</h2>
-  <p><strong>Girl Split the Bill</strong> is a free group trip expense calculator for vacations, birthday trips, dinners, bachelorette weekends and other shared events. Add multiple expenses, choose who actually participated in each one, include tips, use custom shares when needed, and calculate who owes whom at the end.</p>
-
-  <h2>How it works</h2>
-  <ol>
-    <li>Add the travelers on your trip or event.</li>
-    <li>Add each expense and choose who paid.</li>
-    <li>Select only the people who shared that expense.</li>
-    <li>Use an equal split or enter custom shares when someone owes a different amount.</li>
-    <li>Calculate the final split, then copy or share the summary.</li>
-  </ol>
-
-  <h2>Made for real group trips</h2>
-  <p>Not everyone does everything on a group trip. One person may join dinner but skip breakfast, while someone else does the opposite. Girl Split the Bill lets you choose participants separately for every expense, so people are only included in the costs they actually shared.</p>
-  <p>Celebrating a birthday or someone special? You can also help cover that person's share and adjust how much each traveler contributes toward the treat.</p>
-
-  <h2>Frequently asked questions</h2>
-
-  <details>
-    <summary>Can different people participate in different expenses?</summary>
-    <p>Yes. Every expense has its own participant list, so you can include only the travelers who actually shared that cost.</p>
-  </details>
-
-  <details>
-    <summary>What if everyone ordered different amounts?</summary>
-    <p>Choose a custom split and enter each participant's share instead of dividing the bill equally.</p>
-  </details>
-
-  <details>
-    <summary>Can one person pay for the whole dinner?</summary>
-    <p>Yes. Select the person who paid, choose everyone who shared the dinner, and the final calculation will account for what that payer is owed.</p>
-  </details>
-
-  <details>
-    <summary>Can we cover someone's share for a birthday or special occasion?</summary>
-    <p>Yes. Use the treat-someone option to choose the person being celebrated and adjust the suggested extra contribution from the other travelers.</p>
-  </details>
-
-  <details>
-    <summary>Can I add a tip?</summary>
-    <p>Yes. If the tip is not already included in the bill amount, add it separately and it will be included in the expense total.</p>
-  </details>
-
-  <details>
-    <summary>Can I share the final split with the group?</summary>
-    <p>Yes. After calculating the final split, use Copy Summary or Share Summary to send a concise message showing who owes whom. If a recipient's Venmo was entered, it can appear with the amount owed.</p>
-  </details>
-</section>
 
 <script>
 (function(){
@@ -194,27 +170,13 @@ function renderExpenses(){var b=E("expenses");b.innerHTML="";if(!state.expenses.
 function calculate(){var bal={};for(var p=0;p<state.people.length;p++)bal[state.people[p]]=0;
  for(var k=0;k<state.expenses.length;k++){var e=state.expenses[k];if(!e.participants.length)continue;var total=e.amount+(e.tip||0);bal[e.payer]+=total;var equal=total/e.participants.length,rawExtra=0,covered=0,specialBase=0;if(e.special){for(var x in e.extras)rawExtra+=e.extras[x];specialBase=e.splitMode==="custom"?(e.customShares[e.special]||0):equal;covered=Math.min(rawExtra,specialBase)}
   for(var j=0;j<e.participants.length;j++){var person=e.participants[j],owed=e.splitMode==="custom"?(e.customShares[person]||0):equal;if(person===e.special)owed-=covered;else if(e.special&&covered>0&&rawExtra>0)owed+=(e.extras[person]||0)*(covered/rawExtra);bal[person]-=owed}}
- var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}var lines=[],i=0,j=0;
- while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]);lines.push(debt[i][0]+" owes "+cred[j][0]+" "+money(v));debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}
- var trip=E("trip").value.trim();
- var heading=trip?trip+" 💕":"Final Split 💕";
- var out=[];
- for(var z=0;z<lines.length;z++){
-  var recipient=lines[z].split(" owes ")[1];
-  recipient=recipient?recipient.split(" $")[0]:"";
-  var item=lines[z];
-  if(recipient&&state.venmo[recipient])item+="\nVenmo: "+state.venmo[recipient];
-  out.push(item);
- }
- E("result").textContent=heading+"\n\nHere’s the final split:\n\n"+(out.length?out.join("\n\n"):"Everyone is settled up!")+"\n\nThanks everyone! 💕";
- save()
-}
+ var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}var lines=[],i=0,j=0;while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]);lines.push(debt[i][0]+" pays "+cred[j][0]+" "+money(v));debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}var trip=E("trip").value.trim();var friendly=trip?("Hi! Here is the total for the "+trip+" event 💕"):("Hi! Here is your final split 💕");var out=[];for(var z=0;z<lines.length;z++){var recipient=lines[z].split(" pays ")[1];recipient=recipient?recipient.split(" $")[0]:"";out.push(lines[z]+(recipient&&state.venmo[recipient]?" — Venmo: "+state.venmo[recipient]:""))}E("result").textContent=friendly+"\n\nFinal Split\n"+(out.length?out.join("\n"):"Everyone is settled up!");save()}
 
 E("addTraveler").onclick=addTraveler;E("travelerName").onkeydown=function(e){if((e||window.event).keyCode===13){if(e.preventDefault)e.preventDefault();addTraveler();return false}};
 E("payer").onchange=function(){E("venmo").value=state.venmo[this.value]||""};E("amount").oninput=function(){renderCustom();renderTreat()};E("tip").oninput=function(){renderCustom();renderTreat()};E("equalMode").onchange=function(){renderCustom();renderTreat()};E("customMode").onchange=function(){renderCustom();renderTreat()};E("treated").onchange=function(){renderTreat()};
-E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("calculate").onclick=function(){trackEvent("calculate_split");calculate()};E("trip").oninput=save;
+E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("calculate").onclick=calculate;E("trip").oninput=save;
 E("copy").onclick=function(){var t=E("result").textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert("Copied!")});else alert("Press and hold the result to copy.")};
-E("share").onclick=async function(){trackEvent("share_summary");
+E("share").onclick=async function(){
  var body=E("result").textContent;
  if(body==="Your settlement will appear here."){alert("Calculate the final split first.");return}
  var trip=E("trip").value.trim();

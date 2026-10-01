@@ -8,15 +8,15 @@
 <meta name="robots" content="index,follow">
 <style>
 :root{
-  --bg:#fff9fb;--card:#ffffff;--ink:#2d2330;--muted:#756b75;
-  --accent:#c83f75;--accent-dark:#a92f61;--soft:#fde8f0;
-  --line:#eadfe4;--gold:#fff7df;--green:#217653;--shadow:0 10px 30px rgba(83,39,61,.07)
+  --bg:#f7faf9;--card:#ffffff;--ink:#243331;--muted:#687572;
+  --accent:#2f7d73;--accent-dark:#245f58;--soft:#e5f2ef;
+  --line:#dce6e3;--gold:#fff7df;--green:#217653;--shadow:0 10px 30px rgba(36,74,69,.07)
 }
 *{box-sizing:border-box}
 body{
   margin:0;background:
-  radial-gradient(circle at top left,#fff0f6 0,transparent 34%),
-  linear-gradient(180deg,#fffafb 0,#fff8fb 100%);
+  radial-gradient(circle at top left,#e9f5f2 0,transparent 34%),
+  linear-gradient(180deg,#fbfdfc 0,#f5faf8 100%);
   color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 }
 main{max-width:760px;margin:auto;padding:24px 16px 54px}
@@ -24,14 +24,14 @@ main{max-width:760px;margin:auto;padding:24px 16px 54px}
 .brandPill{
   display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line);
   border-radius:999px;padding:7px 12px;color:var(--accent-dark);font-size:12px;font-weight:750;
-  letter-spacing:.02em;box-shadow:0 4px 14px rgba(83,39,61,.04);margin-bottom:12px
+  letter-spacing:.02em;box-shadow:0 4px 14px rgba(36,74,69,.04);margin-bottom:12px
 }
 h1{margin:5px 0 10px;font-size:clamp(34px,7vw,46px);line-height:1.05;letter-spacing:-.035em}
 .hero .lead{font-size:17px;line-height:1.5;max-width:620px;margin:12px auto 8px}
 .hero p{max-width:640px;margin:8px auto;line-height:1.55}
 .sub,.hint{color:var(--muted);font-size:14px;line-height:1.5}
 .trustRow{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:16px}
-.trustRow span{background:var(--soft);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:700;color:#82425f}
+.trustRow span{background:var(--soft);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:700;color:#315f59}
 .card{
   background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:20px;padding:19px;
   margin:15px 0;box-shadow:var(--shadow)
@@ -40,12 +40,12 @@ h2{font-size:20px;margin:0 0 14px;letter-spacing:-.01em}
 input,select,button{
   font:inherit;border-radius:12px;border:1px solid #d8cdd2;padding:12px;background:#fff;color:var(--ink)
 }
-input:focus,select:focus{outline:3px solid rgba(200,63,117,.12);border-color:#cf6b93}
+input:focus,select:focus{outline:3px solid rgba(47,125,115,.14);border-color:#5d9f96}
 button{cursor:pointer;transition:transform .12s ease,box-shadow .12s ease}
 button:active{transform:translateY(1px)}
 .primary{
-  background:linear-gradient(135deg,var(--accent),#b93469);color:#fff;border:0;font-weight:750;
-  box-shadow:0 5px 13px rgba(200,63,117,.18)
+  background:linear-gradient(135deg,var(--accent),#286b63);color:#fff;border:0;font-weight:750;
+  box-shadow:0 5px 13px rgba(47,125,115,.18)
 }
 .wide{width:100%}
 .row{display:flex;gap:8px}.row>*{flex:1;min-width:0}
@@ -59,7 +59,7 @@ button:active{transform:translateY(1px)}
 .expenseTop{display:flex;justify-content:space-between;gap:10px}
 .actions{display:flex;gap:5px;align-items:flex-start}.mini{padding:6px 9px;font-size:12px}.danger{color:#a52f53}
 .hidden{display:none!important}.editBanner{background:var(--soft);padding:9px 11px;border-radius:10px;margin-bottom:10px;font-size:14px;font-weight:650}
-.result{white-space:pre-wrap;background:#faf7f9;border:1px solid #eee4e9;border-radius:14px;padding:15px;line-height:1.65;margin-top:12px}
+.result{white-space:pre-wrap;background:#f7faf9;border:1px solid #e0e9e6;border-radius:14px;padding:15px;line-height:1.65;margin-top:12px}
 .empty{color:var(--muted);font-size:14px}.mode{display:flex;gap:18px;margin-top:7px}.mode label{display:flex;align-items:center;gap:5px}.mode input{accent-color:var(--accent)}
 .siteFooter{text-align:center;margin:28px 0 4px;color:var(--muted);font-size:13px}
 .siteFooter a{color:var(--accent-dark);font-weight:700;text-decoration:none}.siteFooter a:hover{text-decoration:underline}
@@ -68,7 +68,7 @@ button:active{transform:translateY(1px)}
 <body><main>
 <header class="hero">
 <div class="brandPill">✨ SIMPLE GROUP SPLITS</div>
-<h1>Girl Split the Bill 💕</h1>
+<h1>Split That Bill</h1>
 <p class="lead"><strong>The easy way to split group expenses when everyone isn't doing everything.</strong></p>
 <p class="sub">Add each expense, choose who actually shared it, and we'll handle who owes whom. Split evenly, customize shares, add a tip, or help cover someone special.</p>
 <div class="trustRow"><span>No sign-up</span><span>No spreadsheet</span><span>No account needed</span></div>
@@ -167,36 +167,28 @@ function renderExpenses(){var b=E("expenses");b.innerHTML="";if(!state.expenses.
  for(var i=0;i<state.expenses.length;i++){(function(ix){var e=state.expenses[ix],r=document.createElement("div");r.className="expense";var top=document.createElement("div");top.className="expenseTop",info=document.createElement("div"),title=document.createElement("strong");title.textContent=e.description+" — "+money(e.amount+(e.tip||0));var det=document.createElement("div");det.className="hint";det.textContent=e.payer+" paid"+((e.tip||0)>0?" · "+money(e.tip)+" tip":"")+" · "+((e.splitMode||"equal")==="custom"?"Custom split":"Equal split")+" · Shared by: "+e.participants.join(", ")+(e.special?" · 🎁 extras toward "+e.special:"");info.appendChild(title);info.appendChild(document.createElement("br"));info.appendChild(det);
  var acts=document.createElement("div");acts.className="actions";var ed=document.createElement("button");ed.className="mini";ed.textContent="Edit";ed.onclick=function(){editExpense(ix)};var del=document.createElement("button");del.className="mini danger";del.textContent="Delete";del.onclick=function(){if(confirm("Delete "+e.description+"?")){state.expenses.splice(ix,1);renderExpenses();save()}};acts.appendChild(ed);acts.appendChild(del);top.appendChild(info);top.appendChild(acts);r.appendChild(top);b.appendChild(r)})(i)}}
 
-function calculate(){var bal={};for(var p=0;p<state.people.length;p++)bal[state.people[p]]=0;
- for(var k=0;k<state.expenses.length;k++){var e=state.expenses[k];if(!e.participants.length)continue;var total=e.amount+(e.tip||0);bal[e.payer]+=total;var equal=total/e.participants.length,rawExtra=0,covered=0,specialBase=0;if(e.special){for(var x in e.extras)rawExtra+=e.extras[x];specialBase=e.splitMode==="custom"?(e.customShares[e.special]||0):equal;covered=Math.min(rawExtra,specialBase)}
-  for(var j=0;j<e.participants.length;j++){var person=e.participants[j],owed=e.splitMode==="custom"?(e.customShares[person]||0):equal;if(person===e.special)owed-=covered;else if(e.special&&covered>0&&rawExtra>0)owed+=(e.extras[person]||0)*(covered/rawExtra);bal[person]-=owed}}
- var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}var lines=[],i=0,j=0;while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]);lines.push(debt[i][0]+" owes "+cred[j][0]+" "+money(v));debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}var trip=E("trip").value.trim();var friendly=trip?("Hi! Here is the total for the "+trip+" event 💕"):("Hi! Here is your final split 💕");var out=[];for(var z=0;z<lines.length;z++){var recipient=lines[z].split(" owes ")[1];recipient=recipient?recipient.split(" $")[0]:"";out.push(lines[z]+(recipient&&state.venmo[recipient]?" — Venmo: "+state.venmo[recipient]:""))}E("result").textContent=friendly+"\n\nFinal Split\n"+(out.length?out.join("\n"):"Everyone is settled up!");save()}
+function buildSummary(){
+ var bal={};for(var p=0;p<state.people.length;p++)bal[state.people[p]]=0;
+ for(var k=0;k<state.expenses.length;k++){var e=state.expenses[k];if(!e.participants.length)continue;var total=e.amount+(e.tip||0);bal[e.payer]=(bal[e.payer]||0)+total;var equal=total/e.participants.length,rawExtra=0,covered=0,specialBase=0;if(e.special){for(var x in e.extras)rawExtra+=e.extras[x];specialBase=e.splitMode==="custom"?(e.customShares[e.special]||0):equal;covered=Math.min(rawExtra,specialBase)}
+  for(var j=0;j<e.participants.length;j++){var person=e.participants[j],owed=e.splitMode==="custom"?(e.customShares[person]||0):equal;if(person===e.special)owed-=covered;else if(e.special&&covered>0&&rawExtra>0)owed+=(e.extras[person]||0)*(covered/rawExtra);if(bal[person]===undefined)bal[person]=0;bal[person]-=owed}}
+ var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}
+ var lines=[],i=0,j=0;while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]),recipient=cred[j][0],line=debt[i][0]+" owes "+recipient+" "+money(v);if(state.venmo[recipient])line+=" — Venmo: "+state.venmo[recipient];lines.push(line);debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}
+ var trip=E("trip").value.trim(),friendly=trip?("Hi! Here is the total for the "+trip+" event 💕"):("Hi! Here is your final split 💕");
+ return friendly+"\n\nFinal Split\n"+(lines.length?lines.join("\n"):"Everyone is settled up!");
+}
+function calculate(){var summary=buildSummary();E("result").textContent=summary;save();return summary}
 
 E("addTraveler").onclick=addTraveler;E("travelerName").onkeydown=function(e){if((e||window.event).keyCode===13){if(e.preventDefault)e.preventDefault();addTraveler();return false}};
 E("payer").onchange=function(){E("venmo").value=state.venmo[this.value]||""};E("amount").oninput=function(){renderCustom();renderTreat()};E("tip").oninput=function(){renderCustom();renderTreat()};E("equalMode").onchange=function(){renderCustom();renderTreat()};E("customMode").onchange=function(){renderCustom();renderTreat()};E("treated").onchange=function(){renderTreat()};
 E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("calculate").onclick=calculate;E("trip").oninput=save;
-E("copy").onclick=function(){var t=E("result").textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){alert("Copied!")});else alert("Press and hold the result to copy.")};
+E("copy").onclick=async function(){var t=calculate();try{if(navigator.clipboard){await navigator.clipboard.writeText(t);alert("Copied!")}else alert("Press and hold the result to copy.")}catch(err){alert("Press and hold the result to copy.")}};
 E("share").onclick=async function(){
- // Always recalculate first so the shared summary reflects the latest saved expenses.
- calculate();
- var body=E("result").textContent;
- var trip=E("trip").value.trim();
- var title=trip?trip+" — Final Split":"Final Split";
- if(navigator.share){
-  try{
-   await navigator.share({title:title,text:body});
-  }catch(err){
-   if(err.name!=="AbortError")alert("Sharing wasn't available. Try Copy Summary instead.");
-  }
- }else{
-  try{
-   await navigator.clipboard.writeText(body);
-   alert("Summary copied! You can paste it into Messages, WhatsApp, email, or another app.");
-  }catch(err){
-   alert("Sharing isn't supported in this browser. Try Copy Summary instead.");
-  }
- }
+ var body=calculate(),trip=E("trip").value.trim(),title=trip?trip+" — Final Split":"Final Split";
+ if(navigator.share){try{await navigator.share({title:title,text:body});return}catch(err){if(err.name==="AbortError")return}}
+ try{if(navigator.clipboard){await navigator.clipboard.writeText(body);alert("Summary copied! Paste it into Messages, WhatsApp, email, or another app.")}else alert("Sharing isn't supported in this browser. Press and hold the Final Split to copy it.")}
+ catch(err){alert("Sharing isn't supported in this browser. Press and hold the Final Split to copy it.")}
 };
+
 load();renderTravelers();renderExpenses()
 })();
 </script></body></html>

@@ -61,6 +61,9 @@ button:active{transform:translateY(1px)}
 .hidden{display:none!important}.editBanner{background:var(--soft);padding:9px 11px;border-radius:10px;margin-bottom:10px;font-size:14px;font-weight:650}
 .result{white-space:pre-wrap;background:#f7faf9;border:1px solid #e0e9e6;border-radius:14px;padding:15px;line-height:1.65;margin-top:12px}
 .empty{color:var(--muted);font-size:14px}.mode{display:flex;gap:18px;margin-top:7px}.mode label{display:flex;align-items:center;gap:5px}.mode input{accent-color:var(--accent)}
+.clearArea{text-align:center;margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}
+.clearBtn{background:transparent;color:var(--muted);border:1px solid var(--line);font-size:13px;padding:9px 13px}
+.clearBtn:hover{color:#a52f53;border-color:#d9a7b7}
 .siteFooter{text-align:center;margin:28px 0 4px;color:var(--muted);font-size:13px}
 .siteFooter a{color:var(--accent-dark);font-weight:700;text-decoration:none}.siteFooter a:hover{text-decoration:underline}
 @media(max-width:520px){main{padding:16px 12px 40px}.hero{padding:24px 7px 12px}.stack{display:block}.stack>*{width:100%;margin-top:8px}.expenseTop{display:block}.actions{margin-top:8px}.card{padding:16px}}
@@ -86,9 +89,12 @@ button:active{transform:translateY(1px)}
 <h2>Add Expense</h2><div id="editBanner" class="editBanner hidden">Editing expense</div>
 <div class="row stack"><input id="description" placeholder="Expense (e.g. Dinner)"><input id="amount" type="number" inputmode="decimal" min="0" step=".01" placeholder="Bill amount"></div>
 <input id="tip" class="wide" type="number" inputmode="decimal" min="0" step=".01" placeholder="Tip not included above? (optional)" style="margin-top:9px">
-<div class="row stack" style="margin-top:9px">
-<select id="payer"><option value="">Who paid?</option></select>
+<div style="margin-top:12px">
+<label class="hint" for="payer" style="display:block;margin-bottom:6px"><strong>Who paid the bill?</strong><br>Select the person who actually paid the restaurant, store, or other merchant.</label>
+<div class="row stack">
+<select id="payer"><option value="">Select who paid</option></select>
 <input id="venmo" placeholder="Payer's Venmo (optional), e.g. @name">
+</div>
 </div>
 
 <div style="margin-top:13px"><div class="hint"><strong>Split this expense</strong></div>
@@ -116,7 +122,9 @@ button:active{transform:translateY(1px)}
 <div class="row" style="margin-top:10px">
   <button id="copy" type="button">Copy Summary</button>
   <button id="share" type="button">Share Summary</button>
-</div></section>
+</div>
+<div class="clearArea"><button id="clearAll" type="button" class="clearBtn">Clear All &amp; Start Over</button></div>
+</section>
 
 <footer class="siteFooter">Girl Split the Bill 💕 &nbsp;·&nbsp; <a href="/about.html">About</a></footer>
 </main>
@@ -137,7 +145,7 @@ function renderTravelers(){
  for(var i=0;i<state.people.length;i++){(function(ix){var r=document.createElement("div");r.className="traveler";var n=document.createElement("span");n.className="travelerName";n.textContent=state.people[ix];
  var ed=document.createElement("button");ed.className="mini";ed.textContent="Edit";ed.onclick=function(){renameTraveler(ix)};var rm=document.createElement("button");rm.className="mini danger";rm.textContent="Remove";rm.onclick=function(){removeTraveler(ix)};
  r.appendChild(n);r.appendChild(ed);r.appendChild(rm);b.appendChild(r)})(i)}
- var p=E("payer"),old=p.value;p.innerHTML='<option value="">Who paid?</option>';for(i=0;i<state.people.length;i++){var o=document.createElement("option");o.value=state.people[i];o.textContent=state.people[i];p.appendChild(o)}if(state.people.indexOf(old)>=0)p.value=old;
+ var p=E("payer"),old=p.value;p.innerHTML='<option value="">Select who paid</option>';for(i=0;i<state.people.length;i++){var o=document.createElement("option");o.value=state.people[i];o.textContent=state.people[i];p.appendChild(o)}if(state.people.indexOf(old)>=0)p.value=old;
  renderParticipants();save()
 }
 function addTraveler(){var n=E("travelerName").value.trim();if(!n)return;for(var i=0;i<state.people.length;i++)if(state.people[i].toLowerCase()===n.toLowerCase()){alert("That traveler is already on the trip.");return}state.people.push(n);E("travelerName").value="";renderTravelers()}
@@ -187,11 +195,19 @@ function buildSummary(){
  var trip=E("trip").value.trim(),friendly=trip?("Hi! Here is the total for the "+trip+" event 💕"):("Hi! Here is your final split 💕");
  return friendly+"\n\nFinal Split\n"+(lines.length?lines.join("\n"):"Everyone is settled up!");
 }
+function clearAll(){
+ var rememberedVenmo=Object.assign({},state.venmo||{});
+ if(!confirm("Start over?\n\nThis will remove the trip name, travelers, expenses and final split from this device. Saved Venmo handles will be kept."))return;
+ state={trip:"",people:[],expenses:[],venmo:rememberedVenmo};editing=-1;
+ E("trip").value="";E("result").textContent="Your settlement will appear here.";clearForm();renderTravelers();renderExpenses();save();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
 function calculate(){var summary=buildSummary();E("result").textContent=summary;save();return summary}
 
 E("addTraveler").onclick=addTraveler;E("travelerName").onkeydown=function(e){if((e||window.event).keyCode===13){if(e.preventDefault)e.preventDefault();addTraveler();return false}};
 E("payer").onchange=function(){E("venmo").value=state.venmo[this.value]||""};E("amount").oninput=function(){renderCustom();renderTreat()};E("tip").oninput=function(){renderCustom();renderTreat()};E("equalMode").onchange=function(){renderCustom();renderTreat()};E("customMode").onchange=function(){renderCustom();renderTreat()};E("treated").onchange=function(){renderTreat()};
-E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("calculate").onclick=calculate;E("trip").oninput=save;
+E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("calculate").onclick=calculate;E("clearAll").onclick=clearAll;E("trip").oninput=save;
 E("copy").onclick=async function(){var t=calculate();try{if(navigator.clipboard){await navigator.clipboard.writeText(t);alert("Copied!")}else alert("Press and hold the result to copy.")}catch(err){alert("Press and hold the result to copy.")}};
 E("share").onclick=async function(){
  var body=calculate(),trip=E("trip").value.trim(),title=trip?trip+" — Final Split":"Final Split";

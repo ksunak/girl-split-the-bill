@@ -6,6 +6,14 @@
 <title>Girl Split the Bill – Group Trip Expense Splitter</title>
 <meta name="description" content="Add multiple trip expenses, choose who shared each one, split equally or use custom shares, add tip, and cover someone special.">
 <meta name="robots" content="index,follow">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XSCHGNVVPE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XSCHGNVVPE');
+</script>
 <style>
 :root{
   --bg:#f7faf9;--card:#ffffff;--ink:#243331;--muted:#687572;
@@ -207,13 +215,37 @@ function calculate(){var summary=buildSummary();E("result").textContent=summary;
 
 E("addTraveler").onclick=addTraveler;E("travelerName").onkeydown=function(e){if((e||window.event).keyCode===13){if(e.preventDefault)e.preventDefault();addTraveler();return false}};
 E("payer").onchange=function(){E("venmo").value=state.venmo[this.value]||""};E("amount").oninput=function(){renderCustom();renderTreat()};E("tip").oninput=function(){renderCustom();renderTreat()};E("equalMode").onchange=function(){renderCustom();renderTreat()};E("customMode").onchange=function(){renderCustom();renderTreat()};E("treated").onchange=function(){renderTreat()};
-E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("calculate").onclick=calculate;E("clearAll").onclick=clearAll;E("trip").oninput=save;
-E("copy").onclick=async function(){var t=calculate();try{if(navigator.clipboard){await navigator.clipboard.writeText(t);alert("Copied!")}else alert("Press and hold the result to copy.")}catch(err){alert("Press and hold the result to copy.")}};
+E("treatToggle").onchange=function(){E("treatArea").classList.toggle("hidden",!this.checked);refreshTreat()};E("saveExpense").onclick=saveExpense;E("cancelEdit").onclick=clearForm;E("clearAll").onclick=clearAll;E("trip").oninput=save;
+E("calculate").onclick=function(){
+ calculate();
+ if(typeof gtag==="function")gtag("event","calculate_split");
+};
+E("copy").onclick=async function(){
+ var t=calculate();
+ try{
+  if(navigator.clipboard){
+   await navigator.clipboard.writeText(t);
+   if(typeof gtag==="function")gtag("event","copy_summary");
+   alert("Copied!");
+  }else alert("Press and hold the result to copy.");
+ }catch(err){alert("Press and hold the result to copy.")}
+};
 E("share").onclick=async function(){
  var body=calculate(),trip=E("trip").value.trim(),title=trip?trip+" — Final Split":"Final Split";
- if(navigator.share){try{await navigator.share({title:title,text:body});return}catch(err){if(err.name==="AbortError")return}}
- try{if(navigator.clipboard){await navigator.clipboard.writeText(body);alert("Summary copied! Paste it into Messages, WhatsApp, email, or another app.")}else alert("Sharing isn't supported in this browser. Press and hold the Final Split to copy it.")}
- catch(err){alert("Sharing isn't supported in this browser. Press and hold the Final Split to copy it.")}
+ if(navigator.share){
+  try{
+   await navigator.share({title:title,text:body});
+   if(typeof gtag==="function")gtag("event","share_summary");
+   return;
+  }catch(err){if(err.name==="AbortError")return}
+ }
+ try{
+  if(navigator.clipboard){
+   await navigator.clipboard.writeText(body);
+   if(typeof gtag==="function")gtag("event","copy_summary",{source:"share_fallback"});
+   alert("Summary copied! Paste it into Messages, WhatsApp, email, or another app.");
+  }else alert("Sharing isn't supported in this browser. Press and hold the Final Split to copy it.");
+ }catch(err){alert("Sharing isn't supported in this browser. Press and hold the Final Split to copy it.")}
 };
 
 load();renderTravelers();renderExpenses()

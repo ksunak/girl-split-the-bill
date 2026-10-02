@@ -210,28 +210,29 @@ function buildSummary(){
  var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}
  var lines=[],i=0,j=0;while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]),recipient=cred[j][0],line=debt[i][0]+" owes "+recipient+" "+money(v);if(state.venmo[recipient])line+=" — Venmo: "+state.venmo[recipient];lines.push(line);debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}
  var trip=E("trip").value.trim(),friendly=trip?("Hi! Here is the total for the "+trip+" event 💕"):("Hi! Here is your final split 💕");
- return friendly+"\n\nFinal Split\n"+(lines.length?lines.join("\n"):"Everyone is settled up!");
+ return friendly+"\n\nFinal Split — Simplified Payments\n"+"Payments are netted across all expenses to reduce unnecessary money transfers.\n\n"+(lines.length?lines.join("\n"):"Everyone is settled up!");
 }
 function buildDetailedSummary(){
- var summary=buildSummary(),details=[];
+ var summary=buildSummary(),details=[],bal={};
+ for(var p=0;p<state.people.length;p++)bal[state.people[p]]=0;
  for(var i=0;i<state.expenses.length;i++){
-  var e=state.expenses[i],bill=Number(e.amount||0),tip=Number(e.tip||0),total=bill+tip;
-  var line=e.description+": "+money(bill);
-  if(tip>0)line+=" + "+money(tip)+" tip";
-  line+=" = "+money(total)+" total";
-  details.push(line);
-  details.push("Paid by "+e.payer+" · Shared by: "+e.participants.join(", "));
-  if((e.splitMode||"equal")==="custom"){
-   var shares=[];for(var n in e.customShares)if(e.participants.indexOf(n)>=0)shares.push(n+" "+money(Number(e.customShares[n]||0)));
+  var e=state.expenses[i],total=Number(e.amount||0)+Number(e.tip||0),parts=e.participants||[];
+  if(bal[e.payer]===undefined)bal[e.payer]=0;bal[e.payer]+=total;
+  for(var z=0;z<parts.length;z++)if(bal[parts[z]]===undefined)bal[parts[z]]=0;
+  var line=e.description+": "+money(Number(e.amount||0))+(Number(e.tip||0)>0?" + "+money(Number(e.tip||0))+" tip":"")+" = "+money(total)+" total";
+  details.push(line);details.push("Paid by "+e.payer+" · Shared by: "+parts.join(", "));
+  var equal=parts.length?total/parts.length:0,rawExtra=0,covered=0,specialBase=0;
+  if(e.special){for(var x in (e.extras||{}))rawExtra+=Number(e.extras[x]||0);specialBase=e.splitMode==="custom"?Number((e.customShares||{})[e.special]||0):equal;covered=Math.min(rawExtra,specialBase)}
+  if(e.splitMode==="custom"){
+   var shares=[];for(var q=0;q<parts.length;q++)shares.push(parts[q]+" "+money(Number((e.customShares||{})[parts[q]]||0)));
    if(shares.length)details.push("Custom shares: "+shares.join(" · "));
-  }else if(e.participants.length){details.push("Equal share: "+money(total/e.participants.length)+" each");}
-  if(e.special){
-   var extras=[];for(var x in e.extras)if(Number(e.extras[x]||0)>0)extras.push(x+" +"+money(Number(e.extras[x]||0)));
-   details.push("🎁 Helping cover "+e.special+(extras.length?" · "+extras.join(" · "):""));
-  }
+  }else if(parts.length)details.push("Equal share: "+money(equal)+" each");
+  if(e.special){var extras=[];for(var x2 in (e.extras||{}))if(Number(e.extras[x2]||0)>0)extras.push(x2+" +"+money(Number(e.extras[x2]||0)));details.push("🎁 Helping cover "+e.special+(extras.length?" · "+extras.join(" · "):""));}
+  for(var j=0;j<parts.length;j++){var person=parts[j],owed=e.splitMode==="custom"?Number((e.customShares||{})[person]||0):equal;if(person===e.special)owed-=covered;else if(e.special&&covered>0&&rawExtra>0)owed+=Number((e.extras||{})[person]||0)*(covered/rawExtra);bal[person]-=owed}
   if(i<state.expenses.length-1)details.push("");
  }
- return summary+(details.length?"\n\nCalculation Details\n"+details.join("\n"):"");
+ var tripBal=[];for(var n in bal){if(bal[n]>.005)tripBal.push(n+" should receive "+money(bal[n]));else if(bal[n]<-.005)tripBal.push(n+" owes "+money(-bal[n]));else tripBal.push(n+" is settled");}
+ return summary+(details.length?"\n\nCalculation Details\n"+details.join("\n"):"")+(tripBal.length?"\n\nTrip Balances\n"+tripBal.join("\n"):"");
 }
 function shareText(){return E("withDetails").checked?buildDetailedSummary():buildSummary()}
 

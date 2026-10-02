@@ -69,6 +69,8 @@ button:active{transform:translateY(1px)}
 .hidden{display:none!important}.editBanner{background:var(--soft);padding:9px 11px;border-radius:10px;margin-bottom:10px;font-size:14px;font-weight:650}
 .result{white-space:pre-wrap;background:#f7faf9;border:1px solid #e0e9e6;border-radius:14px;padding:15px;line-height:1.65;margin-top:12px}
 .empty{color:var(--muted);font-size:14px}.mode{display:flex;gap:18px;margin-top:7px}.mode label{display:flex;align-items:center;gap:5px}.mode input{accent-color:var(--accent)}
+.shareOptions{margin-top:12px;padding:11px 12px;background:#f7faf9;border:1px solid var(--line);border-radius:12px}
+.shareOptions .hint{margin-bottom:7px}.shareChoice{display:flex;gap:16px;flex-wrap:wrap}.shareChoice label{display:flex;align-items:center;gap:6px;font-size:14px}.shareChoice input{accent-color:var(--accent)}
 .clearArea{text-align:center;margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}
 .clearBtn{background:transparent;color:var(--muted);border:1px solid var(--line);font-size:13px;padding:9px 13px}
 .clearBtn:hover{color:#a52f53;border-color:#d9a7b7}
@@ -127,6 +129,13 @@ button:active{transform:translateY(1px)}
 
 <section class="card"><h2>Final Split</h2><button id="calculate" type="button" class="primary wide">Calculate Split</button>
 <div id="result" class="result">Your settlement will appear here.</div>
+<div class="shareOptions">
+  <div class="hint"><strong>What would you like to send?</strong></div>
+  <div class="shareChoice">
+    <label><input type="radio" name="summaryDetail" id="totalsOnly" checked> Totals owed</label>
+    <label><input type="radio" name="summaryDetail" id="withDetails"> Totals + calculation details</label>
+  </div>
+</div>
 <div class="row" style="margin-top:10px">
   <button id="copy" type="button">Copy Summary</button>
   <button id="share" type="button">Share Summary</button>
@@ -203,6 +212,29 @@ function buildSummary(){
  var trip=E("trip").value.trim(),friendly=trip?("Hi! Here is the total for the "+trip+" event 💕"):("Hi! Here is your final split 💕");
  return friendly+"\n\nFinal Split\n"+(lines.length?lines.join("\n"):"Everyone is settled up!");
 }
+function buildDetailedSummary(){
+ var summary=buildSummary(),details=[];
+ for(var i=0;i<state.expenses.length;i++){
+  var e=state.expenses[i],bill=Number(e.amount||0),tip=Number(e.tip||0),total=bill+tip;
+  var line=e.description+": "+money(bill);
+  if(tip>0)line+=" + "+money(tip)+" tip";
+  line+=" = "+money(total)+" total";
+  details.push(line);
+  details.push("Paid by "+e.payer+" · Shared by: "+e.participants.join(", "));
+  if((e.splitMode||"equal")==="custom"){
+   var shares=[];for(var n in e.customShares)if(e.participants.indexOf(n)>=0)shares.push(n+" "+money(Number(e.customShares[n]||0)));
+   if(shares.length)details.push("Custom shares: "+shares.join(" · "));
+  }else if(e.participants.length){details.push("Equal share: "+money(total/e.participants.length)+" each");}
+  if(e.special){
+   var extras=[];for(var x in e.extras)if(Number(e.extras[x]||0)>0)extras.push(x+" +"+money(Number(e.extras[x]||0)));
+   details.push("🎁 Helping cover "+e.special+(extras.length?" · "+extras.join(" · "):""));
+  }
+  if(i<state.expenses.length-1)details.push("");
+ }
+ return summary+(details.length?"\n\nCalculation Details\n"+details.join("\n"):"");
+}
+function shareText(){return E("withDetails").checked?buildDetailedSummary():buildSummary()}
+
 function clearAll(){
  var rememberedVenmo=Object.assign({},state.venmo||{});
  if(!confirm("Start over?\n\nThis will remove the trip name, travelers, expenses and final split from this device. Saved Venmo handles will be kept."))return;
@@ -221,21 +253,23 @@ E("calculate").onclick=function(){
  if(typeof gtag==="function")gtag("event","calculate_split");
 };
 E("copy").onclick=async function(){
- var t=calculate();
+ var t=shareText();
+ E("result").textContent=buildSummary();save();
  try{
   if(navigator.clipboard){
    await navigator.clipboard.writeText(t);
-   if(typeof gtag==="function")gtag("event","copy_summary");
+   if(typeof gtag==="function")gtag("event","copy_summary",{detail_level:E("withDetails").checked?"calculation_details":"totals_only"});
    alert("Copied!");
   }else alert("Press and hold the result to copy.");
  }catch(err){alert("Press and hold the result to copy.")}
 };
 E("share").onclick=async function(){
- var body=calculate(),trip=E("trip").value.trim(),title=trip?trip+" — Final Split":"Final Split";
+ var body=shareText(),trip=E("trip").value.trim(),title=trip?trip+" — Final Split":"Final Split";
+ E("result").textContent=buildSummary();save();
  if(navigator.share){
   try{
    await navigator.share({title:title,text:body});
-   if(typeof gtag==="function")gtag("event","share_summary");
+   if(typeof gtag==="function")gtag("event","share_summary",{detail_level:E("withDetails").checked?"calculation_details":"totals_only"});
    return;
   }catch(err){if(err.name==="AbortError")return}
  }

@@ -234,7 +234,13 @@ function buildDetailedSummary(){
  var tripBal=[];for(var n in bal){if(bal[n]>.005)tripBal.push(n+" should receive "+money(bal[n]));else if(bal[n]<-.005)tripBal.push(n+" owes "+money(-bal[n]));else tripBal.push(n+" is settled");}
  return summary+(details.length?"\n\nCalculation Details\n"+details.join("\n"):"")+(tripBal.length?"\n\nTrip Balances\n"+tripBal.join("\n"):"");
 }
-function shareText(){return E("withDetails").checked?buildDetailedSummary():buildSummary()}
+function shareText(){
+ var t=E("withDetails").checked?buildDetailedSummary():buildSummary();
+ var brand="✨ Split yours at GirlSplitTheBill.com";
+ // Normalize the outbound message so Copy and Share always include the brand once.
+ t=t.replace(/\n\n✨ Split yours at GirlSplitTheBill\.com\s*$/,"");
+ return t+"\n\n"+brand;
+}
 
 function clearAll(){
  var rememberedVenmo=Object.assign({},state.venmo||{});
@@ -267,10 +273,6 @@ E("copy").onclick=async function(){
 E("share").onclick=async function(){
  var body=shareText(),trip=E("trip").value.trim();
  var title=trip?trip+" — Split with GirlSplitTheBill":"Split with GirlSplitTheBill";
- // Put the brand directly in the shared text because some mobile share
- // targets ignore or hide the Web Share API title field.
- var brandLine="✨ Split yours at GirlSplitTheBill.com";
- if(body.indexOf(brandLine)===-1)body=body+"\n\n"+brandLine;
  E("result").textContent=buildSummary();save();
  if(navigator.share){
   try{

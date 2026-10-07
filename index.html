@@ -210,7 +210,7 @@ function buildSummary(){
  var debt=[],cred=[];for(var n in bal){if(bal[n]<-.005)debt.push([n,-bal[n]]);else if(bal[n]>.005)cred.push([n,bal[n]])}
  var lines=[],i=0,j=0;while(i<debt.length&&j<cred.length){var v=Math.min(debt[i][1],cred[j][1]),recipient=cred[j][0],line=debt[i][0]+" owes "+recipient+" "+money(v);if(state.venmo[recipient])line+=" — Venmo: "+state.venmo[recipient];lines.push(line);debt[i][1]-=v;cred[j][1]-=v;if(debt[i][1]<.005)i++;if(cred[j][1]<.005)j++}
  var trip=E("trip").value.trim(),friendly=trip?("Hi! Here is the total for the "+trip+" event 💕"):("Hi! Here is your final split 💕");
- return friendly+"\n\nFinal Split — Simplified Payments\n"+"Payments are netted across all expenses to reduce unnecessary money transfers.\n\n"+(lines.length?lines.join("\n"):"Everyone is settled up!");
+ return friendly+"\n\nFinal Split — Simplified Payments\n"+"Payments are netted across all expenses to reduce unnecessary money transfers.\n\n"+(lines.length?lines.join("\n"):"Everyone is settled up!")+"\n\n✨ Split yours at GirlSplitTheBill.com";
 }
 function buildDetailedSummary(){
  var summary=buildSummary(),details=[],bal={};
@@ -265,7 +265,12 @@ E("copy").onclick=async function(){
  }catch(err){alert("Press and hold the result to copy.")}
 };
 E("share").onclick=async function(){
- var body=shareText(),trip=E("trip").value.trim(),title=trip?trip+" — Final Split":"Final Split";
+ var body=shareText(),trip=E("trip").value.trim();
+ var title=trip?trip+" — Split with GirlSplitTheBill":"Split with GirlSplitTheBill";
+ // Put the brand directly in the shared text because some mobile share
+ // targets ignore or hide the Web Share API title field.
+ var brandLine="✨ Split yours at GirlSplitTheBill.com";
+ if(body.indexOf(brandLine)===-1)body=body+"\n\n"+brandLine;
  E("result").textContent=buildSummary();save();
  if(navigator.share){
   try{

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Girl Split the Bill – Group Trip Expense Splitter</title>
-<meta name="description" content="Add multiple trip expenses, choose who shared each one, split equally or use custom shares, add tip, and cover someone special.">
+<title>Split Bills with Friends | Dinner &amp; Trip Calculator</title>
+<meta name="description" content="Free bill splitter for dinners, group trips, and shared expenses. Split tips, customize shares, cover a birthday guest, and see who owes whom. No sign-up.">
 <meta name="robots" content="index,follow">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XSCHGNVVPE"></script>
@@ -82,18 +82,19 @@ button:active{transform:translateY(1px)}
 <header class="hero">
 <div class="brandPill">✨ SIMPLE GROUP SPLITS</div>
 <h1>Split That Bill</h1>
-<p class="lead"><strong>The easy way to split group expenses when everyone isn't doing everything.</strong></p>
+<p class="lead"><strong>Free Bill Splitter for Dinners, Group Trips &amp; Friends</strong></p>
+<p class="sub">The easy way to split shared expenses when everyone isn't doing everything.</p>
 <p class="sub">Add each expense, choose who actually shared it, and we'll handle who owes whom. Split evenly, customize shares, add a tip, or help cover someone special.</p>
 <div class="trustRow"><span>No sign-up</span><span>No spreadsheet</span><span>No account needed</span></div>
 <p class="sub" style="margin-top:14px">Not sure how to divide a restaurant check? <a href="/dinner-bill-splitting-guide.html" style="color:var(--accent-dark);font-weight:700">Read our dinner splitting guide →</a></p>
 </header>
 
 <section class="card">
-<h2>Your Trip</h2>
-<input id="trip" class="wide" placeholder="Trip name (e.g. Napa Weekend)">
-<label class="hint" style="display:block;margin-top:12px"><strong>Add a traveler</strong></label>
+<h2>Your Group</h2>
+<input id="trip" class="wide" placeholder="Group or occasion (e.g. Birthday Dinner)">
+<label class="hint" style="display:block;margin-top:12px"><strong>Add a person</strong></label>
 <div class="row" style="margin-top:6px"><input id="travelerName" placeholder="Enter name"><button id="addTraveler" type="button" class="primary">+ Add</button></div>
-<div class="hint" style="margin-top:13px"><strong>People on this trip</strong></div><div id="travelers"></div>
+<div class="hint" style="margin-top:13px"><strong>People in this group</strong></div><div id="travelers"></div>
 </section>
 
 <section class="card">
@@ -119,14 +120,14 @@ button:active{transform:translateY(1px)}
 <label><input id="treatToggle" type="checkbox"> 🎁 Are you treating someone?</label>
 <div id="treatArea" class="hidden" style="margin-top:10px">
 <label class="hint"><strong>Whose share are you helping cover?</strong></label>
-<select id="treated" class="wide" style="margin-top:5px"><option value="">Choose traveler</option></select>
+<select id="treated" class="wide" style="margin-top:5px"><option value="">Choose person</option></select>
 <div id="suggestion" class="hint" style="margin-top:8px"></div><div id="contributors"></div><div id="coverage" class="coverage"></div>
 </div></div>
 
 <div class="row" style="margin-top:13px"><button id="saveExpense" type="button" class="primary">Add expense</button><button id="cancelEdit" type="button" class="hidden">Cancel edit</button></div>
 </section>
 
-<section class="card"><h2>Trip Expenses</h2><div id="expenses" class="empty">No expenses yet. Add as many trip expenses as you need.</div></section>
+<section class="card"><h2>Expenses</h2><div id="expenses" class="empty">No expenses yet. Add as many shared expenses as you need.</div></section>
 
 <section class="card"><h2>Final Split</h2><button id="calculate" type="button" class="primary wide">Calculate Split</button>
 <div id="result" class="result">Your settlement will appear here.</div>
@@ -159,27 +160,27 @@ function selected(){var a=[],b=document.querySelectorAll(".participant");for(var
 function customVals(){var o={},x=document.querySelectorAll(".customShare");for(var i=0;i<x.length;i++)o[x[i].getAttribute("data-name")]=parseFloat(x[i].value)||0;return o}
 
 function renderTravelers(){
- var b=E("travelers");b.innerHTML="";if(!state.people.length)b.innerHTML='<div class="empty">No travelers added yet.</div>';
+ var b=E("travelers");b.innerHTML="";if(!state.people.length)b.innerHTML='<div class="empty">No people added yet.</div>';
  for(var i=0;i<state.people.length;i++){(function(ix){var r=document.createElement("div");r.className="traveler";var n=document.createElement("span");n.className="travelerName";n.textContent=state.people[ix];
  var ed=document.createElement("button");ed.className="mini";ed.textContent="Edit";ed.onclick=function(){renameTraveler(ix)};var rm=document.createElement("button");rm.className="mini danger";rm.textContent="Remove";rm.onclick=function(){removeTraveler(ix)};
  r.appendChild(n);r.appendChild(ed);r.appendChild(rm);b.appendChild(r)})(i)}
  var p=E("payer"),old=p.value;p.innerHTML='<option value="">Select who paid</option>';for(i=0;i<state.people.length;i++){var o=document.createElement("option");o.value=state.people[i];o.textContent=state.people[i];p.appendChild(o)}if(state.people.indexOf(old)>=0)p.value=old;
  renderParticipants();save()
 }
-function addTraveler(){var n=E("travelerName").value.trim();if(!n)return;for(var i=0;i<state.people.length;i++)if(state.people[i].toLowerCase()===n.toLowerCase()){alert("That traveler is already on the trip.");return}state.people.push(n);E("travelerName").value="";renderTravelers()}
-function renameTraveler(ix){var old=state.people[ix],nu=prompt("Edit traveler's name:",old);if(nu===null)return;nu=nu.trim();if(!nu||nu===old)return;for(var i=0;i<state.people.length;i++)if(i!==ix&&state.people[i].toLowerCase()===nu.toLowerCase()){alert("That name is already used.");return}
+function addTraveler(){var n=E("travelerName").value.trim();if(!n)return;for(var i=0;i<state.people.length;i++)if(state.people[i].toLowerCase()===n.toLowerCase()){alert("That person is already in the group.");return}state.people.push(n);E("travelerName").value="";renderTravelers()}
+function renameTraveler(ix){var old=state.people[ix],nu=prompt("Edit person's name:",old);if(nu===null)return;nu=nu.trim();if(!nu||nu===old)return;for(var i=0;i<state.people.length;i++)if(i!==ix&&state.people[i].toLowerCase()===nu.toLowerCase()){alert("That name is already used.");return}
  state.people[ix]=nu;if(state.venmo[old]!==undefined){state.venmo[nu]=state.venmo[old];delete state.venmo[old]}for(i=0;i<state.expenses.length;i++){var e=state.expenses[i];if(e.payer===old)e.payer=nu;e.participants=e.participants.map(function(v){return v===old?nu:v});if(e.special===old)e.special=nu;if(e.extras&&e.extras[old]!==undefined){e.extras[nu]=e.extras[old];delete e.extras[old]}if(e.customShares&&e.customShares[old]!==undefined){e.customShares[nu]=e.customShares[old];delete e.customShares[old]}}renderTravelers();renderExpenses()}
 function removeTraveler(ix){var n=state.people[ix];for(var i=0;i<state.expenses.length;i++)if(state.expenses[i].payer===n){alert(n+" paid a saved expense. Edit or delete that expense before removing them.");return}if(!confirm("Remove "+n+" from the trip and any saved expenses they share?"))return;
  for(i=0;i<state.expenses.length;i++){var e=state.expenses[i];e.participants=e.participants.filter(function(v){return v!==n});if(e.special===n){e.special="";e.extras={}}if(e.extras)delete e.extras[n];if(e.customShares)delete e.customShares[n]}delete state.venmo[n];state.people.splice(ix,1);renderTravelers();renderExpenses()}
 
 function renderParticipants(chosen){chosen=chosen||state.people.slice();var b=E("participants");b.innerHTML="";for(var i=0;i<state.people.length;i++){var r=document.createElement("div");r.className="person";var c=document.createElement("input");c.type="checkbox";c.className="participant";c.value=state.people[i];c.checked=chosen.indexOf(state.people[i])>=0;c.onchange=function(){refreshTreat();renderCustom()};var n=document.createElement("span");n.className="grow";n.textContent=state.people[i];r.appendChild(c);r.appendChild(n);b.appendChild(r)}refreshTreat();renderCustom()}
-function refreshTreat(){var parts=selected(),old=E("treated").value,t=E("treated");t.innerHTML='<option value="">Choose traveler</option>';for(var i=0;i<parts.length;i++){var o=document.createElement("option");o.value=parts[i];o.textContent=parts[i];t.appendChild(o)}if(parts.indexOf(old)>=0)t.value=old;renderTreat()}
+function refreshTreat(){var parts=selected(),old=E("treated").value,t=E("treated");t.innerHTML='<option value="">Choose person</option>';for(var i=0;i<parts.length;i++){var o=document.createElement("option");o.value=parts[i];o.textContent=parts[i];t.appendChild(o)}if(parts.indexOf(old)>=0)t.value=old;renderTreat()}
 function renderCustom(existing){var b=E("customShares"),parts=selected();b.innerHTML="";E("customCheck").textContent="";if(mode()!=="custom"){b.classList.add("hidden");return}b.classList.remove("hidden");var total=totalInput(),base=parts.length?total/parts.length:0;
  for(var i=0;i<parts.length;i++){var r=document.createElement("div");r.className="contrib";var l=document.createElement("label");l.textContent=parts[i]+" share";var inp=document.createElement("input");inp.type="number";inp.inputMode="decimal";inp.min="0";inp.step=".01";inp.className="customShare";inp.setAttribute("data-name",parts[i]);inp.value=(existing&&existing[parts[i]]!==undefined?existing[parts[i]]:base).toFixed(2);inp.oninput=checkCustom;r.appendChild(l);r.appendChild(inp);b.appendChild(r)}checkCustom()}
 function checkCustom(){if(mode()!=="custom")return;var v=customVals(),sum=0;for(var k in v)sum+=v[k];var target=totalInput(),diff=target-sum;E("customCheck").className=Math.abs(diff)<.011?"ok":"hint";E("customCheck").textContent=Math.abs(diff)<.011?"✓ Custom shares add up to "+money(target):"Shares total "+money(sum)+" — "+money(Math.abs(diff))+(diff>0?" still needs to be assigned.":" over the total.")}
 function renderTreat(existing){var parts=selected(),sp=E("treated").value;E("contributors").innerHTML="";E("suggestion").textContent="";E("coverage").textContent="";if(!sp||parts.length<2)return;var base;
  if(mode()==="custom"){var cv=customVals();base=cv[sp]||0}else base=totalInput()/parts.length;
- var sug=base/(parts.length-1);E("suggestion").textContent=sp+"'s share is "+money(base)+". Suggested extra: "+money(sug)+" per other traveler.";
+ var sug=base/(parts.length-1);E("suggestion").textContent=sp+"'s share is "+money(base)+". Suggested extra: "+money(sug)+" per other person.";
  for(var i=0;i<parts.length;i++)if(parts[i]!==sp){var r=document.createElement("div");r.className="contrib";var l=document.createElement("label");l.textContent=parts[i]+" extra";var inp=document.createElement("input");inp.type="number";inp.inputMode="decimal";inp.min="0";inp.step=".01";inp.className="extra";inp.setAttribute("data-name",parts[i]);inp.value=(existing&&existing[parts[i]]!==undefined?existing[parts[i]]:sug).toFixed(2);inp.oninput=coverage;r.appendChild(l);r.appendChild(inp);E("contributors").appendChild(r)}coverage()}
 function coverage(){var x=document.querySelectorAll(".extra"),sum=0;for(var i=0;i<x.length;i++)sum+=parseFloat(x[i].value)||0;var sp=E("treated").value,base=0;if(sp){if(mode()==="custom")base=customVals()[sp]||0;else{var p=selected();base=p.length?totalInput()/p.length:0}}E("coverage").textContent=money(sum)+" of "+money(base)+" covered"}
 
@@ -189,7 +190,7 @@ function saveExpense(){var d=E("description").value.trim(),a=parseFloat(E("amoun
  var sp=E("treatToggle").checked?E("treated").value:"",extras={},xs=document.querySelectorAll(".extra");if(E("treatToggle").checked&&!sp){alert("Choose whose share is being covered.");return}for(var i=0;i<xs.length;i++)extras[xs[i].getAttribute("data-name")]=parseFloat(xs[i].value)||0;
  var obj={description:d,amount:a,tip:tip,payer:p,participants:parts,splitMode:m,customShares:shares,special:sp,extras:extras};if(editing>=0)state.expenses[editing]=obj;else state.expenses.push(obj);clearForm();renderExpenses();save()}
 function editExpense(ix){editing=ix;var e=state.expenses[ix];E("description").value=e.description;E("amount").value=e.amount;E("tip").value=e.tip||"";E("payer").value=e.payer;E("venmo").value=state.venmo[e.payer]||"";E("customMode").checked=e.splitMode==="custom";E("equalMode").checked=!E("customMode").checked;renderParticipants(e.participants);renderCustom(e.customShares||{});E("treatToggle").checked=!!e.special;E("treatArea").classList.toggle("hidden",!e.special);if(e.special){E("treated").value=e.special;renderTreat(e.extras||{})}E("editBanner").classList.remove("hidden");E("cancelEdit").classList.remove("hidden");E("saveExpense").textContent="Save changes";window.scrollTo({top:E("editBanner").getBoundingClientRect().top+window.pageYOffset-20,behavior:"smooth"})}
-function renderExpenses(){var b=E("expenses");b.innerHTML="";if(!state.expenses.length){b.className="empty";b.textContent="No expenses yet. Add as many trip expenses as you need.";return}b.className="";
+function renderExpenses(){var b=E("expenses");b.innerHTML="";if(!state.expenses.length){b.className="empty";b.textContent="No expenses yet. Add as many shared expenses as you need.";return}b.className="";
  for(var i=0;i<state.expenses.length;i++){(function(ix){var e=state.expenses[ix],r=document.createElement("div");r.className="expense";var top=document.createElement("div");top.className="expenseTop",info=document.createElement("div"),title=document.createElement("strong");title.textContent=e.description+" — "+money(e.amount+(e.tip||0));var det=document.createElement("div");det.className="hint";det.textContent=e.payer+" paid"+((e.tip||0)>0?" · "+money(e.tip)+" tip":"")+" · "+((e.splitMode||"equal")==="custom"?"Custom split":"Equal split")+" · Shared by: "+e.participants.join(", ")+(e.special?" · 🎁 extras toward "+e.special:"");info.appendChild(title);info.appendChild(document.createElement("br"));info.appendChild(det);
  var acts=document.createElement("div");acts.className="actions";var ed=document.createElement("button");ed.className="mini";ed.textContent="Edit";ed.onclick=function(){editExpense(ix)};var del=document.createElement("button");del.className="mini danger";del.textContent="Delete";del.onclick=function(){if(confirm("Delete "+e.description+"?")){state.expenses.splice(ix,1);renderExpenses();save()}};acts.appendChild(ed);acts.appendChild(del);top.appendChild(info);top.appendChild(acts);r.appendChild(top);b.appendChild(r)})(i)}}
 

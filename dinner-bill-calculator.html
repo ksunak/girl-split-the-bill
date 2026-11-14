@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dinner Bill Splitter with Drinks, Tax & Tip | GirlSplitTheBill</title>
+<meta name="description" content="Split one restaurant bill fairly when only some friends had drinks. Allocate food, alcohol, tax and tip, then copy everyone's share. Free, no sign-up.">
+<link rel="canonical" href="https://girlsplitthebill.com/dinner-bill-calculator.html">
+<style>
+:root{--ink:#243331;--accent:#2f7d73;--muted:#687572;--line:#dce6e3;--bg:#f0f8f5}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(#e9f5f2,#f7faf9 340px);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);line-height:1.55}
+main{max-width:790px;margin:auto;padding:24px 15px 60px}header,footer{text-align:center;margin:12px 0 24px}a{color:#245f58}header a{text-decoration:none;font-weight:800}
+article{background:#fff;border:1px solid var(--line);border-radius:20px;padding:clamp(19px,5vw,36px);box-shadow:0 10px 30px #244a4512}
+h1{font-size:clamp(28px,5vw,40px);line-height:1.18;margin:7px 0 10px}h2{font-size:20px;margin:25px 0 9px}.eyebrow{font-size:12px;font-weight:800;color:#245f58;letter-spacing:.08em}
+p{margin:8px 0 16px}.muted,.hint{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:flex;flex-direction:column;gap:5px}label{font-weight:650;font-size:14px}
+input,select{width:100%;border:1px solid #bfcfca;border-radius:10px;padding:12px;font-size:16px;background:white;color:var(--ink)}
+button{font:inherit;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:white;border-radius:11px;padding:11px 16px;font-weight:750}
+button.secondary{background:white;color:var(--accent)}button:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.person{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.person input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}.person input[type=text]{flex:1;min-width:100px}
+.person button{padding:7px 11px}.panel{background:var(--bg);padding:15px;border-radius:13px;margin-top:16px}
+table{border-collapse:collapse;width:100%;margin-top:10px}td,th{text-align:left;border-bottom:1px solid #d9e7e1;padding:10px 6px}td:last-child,th:last-child{text-align:right}
+.error{color:#a52f53;font-weight:700}.success{color:#245f58}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+details{margin-top:15px}summary{cursor:pointer;font-weight:700}
+@media(max-width:550px){.grid{grid-template-columns:1fr}.person{flex-wrap:wrap}.person input[type=text]{width:60%}}
+</style>
+</head>
+<body><main>
+<header><a href="/">💕 GirlSplitTheBill</a></header>
+<article>
+<div class="eyebrow">FREE RESTAURANT BILL CALCULATOR</div>
+<h1>Split Dinner, Drinks, Tax & Tip Fairly</h1>
+<p>One receipt, different drink orders? Enter the totals, choose who had alcohol, and get each person's share. No sign-up or receipt upload.</p>
+<h2>1. Enter the restaurant receipt</h2>
+<div class="grid">
+<div class="field"><label for="total">Total paid, including tax and tip ($)</label><input id="total" type="number" min="0" step=".01" inputmode="decimal" value="156"></div>
+<div class="field"><label for="alcohol">Alcohol subtotal, before tax ($)</label><input id="alcohol" type="number" min="0" step=".01" inputmode="decimal" value="30"></div>
+<div class="field"><label for="tax">Tax shown on receipt ($)</label><input id="tax" type="number" min="0" step=".01" inputmode="decimal" value="12"></div>
+<div class="field"><label for="tip">Tip shown on receipt ($)</label><input id="tip" type="number" min="0" step=".01" inputmode="decimal" value="24"></div>
+</div>
+<p class="hint">Include any tip already paid in the total above and enter it in the tip field for allocation. Don't add it twice. Food subtotal is calculated as total minus alcohol, tax and tip. For now, food is split equally by everyone.</p>
+<h2>2. Who was at dinner?</h2>
+<div id="people"></div>
+<div class="actions"><button id="add" class="secondary" type="button">+ Add person</button></div>
+<p class="hint">Check “Had alcohol” only for people sharing the alcohol subtotal. Everyone shares the food subtotal equally.</p>
+<h2>3. Choose how to split tax and tip</h2>
+<div class="field"><label for="method">Allocation method</label><select id="method"><option value="proportional">Proportional to each person's food + alcohol share (recommended)</option><option value="equal">Split tax and tip equally among everyone</option></select></div>
+<p class="hint">Proportional is a practical default for a combined restaurant receipt. If food and alcohol have different tax rates, this simplified calculation won't reproduce the exact category-specific taxes.</p>
+<div class="actions"><button id="calculate" type="button">Calculate each share</button><button id="reset" class="secondary" type="button">Reset example</button></div>
+<div id="output" class="panel" aria-live="polite"></div>
+<details><summary>How does the calculation work?</summary><p>Food is shared equally among all diners. Alcohol is shared equally only among checked drinkers. The tax and tip totals are then split either proportionally to those pretax shares or equally, depending on your selection. Amounts are rounded to cents while preserving the receipt total.</p></details>
+<p class="hint">This calculator handles a single restaurant receipt and shows what each person owes. If different people paid separate expenses, use the <a href="/">main group expense calculator</a> to settle who pays whom.</p>
+<p><a href="/dinner-bill-splitting-guide.html">Read our guide to splitting dinner bills fairly</a></p>
+</article><footer><a href="/">Main Calculator</a> · <a href="/dinner-bill-splitting-guide.html">Dinner Guide</a> · <a href="/about.html">About</a></footer>
+</main>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+let people=[];
+function addPerson(name="",drinks=false){people.push({id:Date.now()+Math.random(),name,drinks});renderPeople();}
+function renderPeople(){
+ const host=$("people");host.textContent="";
+ people.forEach((person,index)=>{
+  const row=document.createElement("div");row.className="person";
+  const name=document.createElement("input");name.type="text";name.placeholder="Person "+(index+1);name.value=person.name;name.setAttribute("aria-label","Person "+(index+1)+" name");name.addEventListener("input",()=>{person.name=name.value;});
+  const cb=document.createElement("input");cb.type="checkbox";cb.checked=person.drinks;cb.id="drink-"+index;cb.addEventListener("change",()=>{person.drinks=cb.checked;});
+  const label=document.createElement("label");label.htmlFor=cb.id;label.textContent="Had alcohol";
+  const remove=document.createElement("button");remove.className="secondary";remove.type="button";remove.textContent="Remove";remove.disabled=people.length<=1;remove.addEventListener("click",()=>{people=people.filter(p=>p.id!==person.id);renderPeople();});
+  row.append(name,cb,label,remove);host.append(row);
+ });
+}
+function cents(id){const el=$(id),v=el.value.trim();if(v===""||!Number.isFinite(Number(v))||Number(v)<0||!Number.isInteger(Math.round(Number(v)*100)))return null;return Math.round(Number(v)*100);}
+function allocate(total,weights){
+ const sum=weights.reduce((a,b)=>a+b,0);
+ if(total===0)return weights.map(()=>0);
+ if(sum<=0)return null;
+ const raw=weights.map(w=>total*w/sum),base=raw.map(Math.floor);
+ let remainder=total-base.reduce((a,b)=>a+b,0);
+ const order=raw.map((v,i)=>({i,frac:v-base[i]})).sort((a,b)=>b.frac-a.frac||a.i-b.i);
+ for(let j=0;j<remainder;j++)base[order[j].i]++;
+ return base;
+}
+function money(c){return "$"+(c/100).toFixed(2);}
+function calculate(){
+ const output=$("output");output.textContent="";
+ const total=cents("total"),alcohol=cents("alcohol"),tax=cents("tax"),tip=cents("tip");
+ if([total,alcohol,tax,tip].some(x=>x===null)){output.className="panel error";output.textContent="Enter valid non-negative dollar amounts in every receipt field.";return;}
+ const food=total-alcohol-tax-tip;
+ if(total<=0||food<0){output.className="panel error";output.textContent="The receipt total must be positive and at least as large as alcohol + tax + tip.";return;}
+ if(!people.length||people.some(p=>!p.name.trim())||new Set(people.map(p=>p.name.trim().toLowerCase())).size!==people.length){output.className="panel error";output.textContent="Give each diner a unique name.";return;}
+ const drinkers=people.filter(p=>p.drinks).length;
+ if(alcohol>0&&!drinkers){output.className="panel error";output.textContent="Select at least one person who had alcohol, or set the alcohol subtotal to $0.";return;}
+ const foodShares=allocate(food,people.map(()=>1));
+ const alcoholShares=alcohol?allocate(alcohol,people.map(p=>p.drinks?1:0)):people.map(()=>0);
+ const pretax=people.map((p,i)=>foodShares[i]+alcoholShares[i]);
+ const weights=$("method").value==="equal"?people.map(()=>1):pretax;
+ let taxShares=allocate(tax,weights),tipShares=allocate(tip,weights);
+ if(!taxShares||!tipShares){output.className="panel error";output.textContent="Cannot proportionally allocate tax and tip when the food and alcohol subtotal is $0. Choose equal allocation instead.";return;}
+ const shares=people.map((p,i)=>({name:p.name.trim(),food:foodShares[i],alcohol:alcoholShares[i],tax:taxShares[i],tip:tipShares[i],total:pretax[i]+taxShares[i]+tipShares[i]}));
+ const heading=document.createElement("h2");heading.textContent="Your split";heading.style.marginTop="0";
+ const summary=document.createElement("p");summary.textContent="Food: "+money(food)+" · Alcohol: "+money(alcohol)+" · Tax: "+money(tax)+" · Tip: "+money(tip);
+ const table=document.createElement("table");const tr=document.createElement("tr");
+ ["Person","Owes"].forEach(s=>{const th=document.createElement("th");th.textContent=s;tr.append(th)});table.append(tr);
+ shares.forEach(s=>{const row=document.createElement("tr");[s.name,money(s.total)].forEach(v=>{const td=document.createElement("td");td.textContent=v;row.append(td)});table.append(row);});
+ const totalrow=document.createElement("tr");const label=document.createElement("th");label.textContent="Total";const amount=document.createElement("th");amount.textContent=money(shares.reduce((a,s)=>a+s.total,0));totalrow.append(label,amount);table.append(totalrow);
+ const details=document.createElement("details");const summ=document.createElement("summary");summ.textContent="See food, drinks, tax and tip per person";details.append(summ);
+ const detailtable=document.createElement("table");const hr=document.createElement("tr");["Person","Food","Drinks","Tax","Tip"].forEach(t=>{const th=document.createElement("th");th.textContent=t;hr.append(th)});detailtable.append(hr);
+ shares.forEach(s=>{const row=document.createElement("tr");[s.name,money(s.food),money(s.alcohol),money(s.tax),money(s.tip)].forEach(t=>{const td=document.createElement("td");td.textContent=t;row.append(td)});detailtable.append(row);});details.append(detailtable);
+ const copy=document.createElement("button");copy.type="button";copy.textContent="Copy split summary";
+ const text="Dinner bill split — GirlSplitTheBill.com\n"+shares.map(s=>s.name+": "+money(s.total)).join("\n")+"\nTotal: "+money(total)+"\nTax and tip: "+($("method").value==="equal"?"equal":"proportional");
+ copy.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(text);copy.textContent="Copied!";}catch(e){const ta=document.createElement("textarea");ta.value=text;document.body.append(ta);ta.select();const ok=document.execCommand("copy");ta.remove();copy.textContent=ok?"Copied!":"Copy unavailable";}});
+ output.className="panel";output.append(heading,summary,table,details,copy);
+}
+function reset(){ $("total").value="156";$("alcohol").value="30";$("tax").value="12";$("tip").value="24";$("method").value="proportional";people=[];addPerson("Maya",true);addPerson("Nina",false);addPerson("Chloe",true);calculate();}
+$("add").addEventListener("click",()=>addPerson("Person "+(people.length+1),false));
+$("calculate").addEventListener("click",calculate);
+$("reset").addEventListener("click",reset);
+reset();
+})();
+</script></body></html>

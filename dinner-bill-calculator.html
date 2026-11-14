@@ -54,6 +54,9 @@ details{margin-top:15px}summary{cursor:pointer;font-weight:700}
 <h2>3. Choose how to split tax and tip</h2>
 <div class="field"><label for="method">Allocation method</label><select id="method"><option value="proportional">Proportional to each person's food + alcohol share (recommended)</option><option value="equal">Split tax and tip equally among everyone</option></select></div>
 <p class="hint">Proportional is a practical default for a combined restaurant receipt. If food and alcohol have different tax rates, this simplified calculation won't reproduce the exact category-specific taxes.</p>
+<h2>4. Who paid the bill? (optional)</h2>
+<div class="field"><label for="payer">Who paid the entire restaurant receipt?</label><select id="payer"><option value="">Just show everyone's share</option></select></div>
+<p class="hint">Selecting a payer adds reimbursement instructions. It does not change the equal or proportional split above.</p>
 <div class="actions"><button id="calculate" type="button">Calculate each share</button><button id="reset" class="secondary" type="button">Reset example</button></div>
 <div id="output" class="panel" aria-live="polite"></div>
 <details><summary>How does the calculation work?</summary><p>Food is shared equally among all diners. Alcohol is shared equally only among checked drinkers. The tax and tip totals are then split either proportionally to those pretax shares or equally, depending on your selection. Amounts are rounded to cents while preserving the receipt total.</p></details>
@@ -68,10 +71,11 @@ const $=id=>document.getElementById(id);
 let people=[];
 function addPerson(name="",drinks=false){people.push({id:Date.now()+Math.random(),name,drinks});renderPeople();}
 function renderPeople(){
+ const previous=$("payer").value;const payer=$("payer");payer.replaceChildren(new Option("Just show everyone's share",""));people.forEach(p=>payer.add(new Option(p.name.trim()||"Unnamed person",String(p.id))));if(people.some(p=>String(p.id)===previous))payer.value=previous;
  const host=$("people");host.textContent="";
  people.forEach((person,index)=>{
   const row=document.createElement("div");row.className="person";
-  const name=document.createElement("input");name.type="text";name.placeholder="Person "+(index+1);name.value=person.name;name.setAttribute("aria-label","Person "+(index+1)+" name");name.addEventListener("input",()=>{person.name=name.value;});
+  const name=document.createElement("input");name.type="text";name.placeholder="Person "+(index+1);name.value=person.name;name.setAttribute("aria-label","Person "+(index+1)+" name");name.addEventListener("input",()=>{person.name=name.value;const option=Array.from($("payer").options).find(o=>o.value===String(person.id));if(option)option.textContent=person.name.trim()||"Unnamed person";});
   const cb=document.createElement("input");cb.type="checkbox";cb.checked=person.drinks;cb.id="drink-"+index;cb.addEventListener("change",()=>{person.drinks=cb.checked;});
   const label=document.createElement("label");label.htmlFor=cb.id;label.textContent="Had alcohol";
   const remove=document.createElement("button");remove.className="secondary";remove.type="button";remove.textContent="Remove";remove.disabled=people.length<=1;remove.addEventListener("click",()=>{people=people.filter(p=>p.id!==person.id);renderPeople();});
@@ -115,13 +119,21 @@ function calculate(trackEvent=false){
  const details=document.createElement("details");const summ=document.createElement("summary");summ.textContent="See food, drinks, tax and tip per person";details.append(summ);
  const detailtable=document.createElement("table");const hr=document.createElement("tr");["Person","Food","Drinks","Tax","Tip"].forEach(t=>{const th=document.createElement("th");th.textContent=t;hr.append(th)});detailtable.append(hr);
  shares.forEach(s=>{const row=document.createElement("tr");[s.name,money(s.food),money(s.alcohol),money(s.tax),money(s.tip)].forEach(t=>{const td=document.createElement("td");td.textContent=t;row.append(td)});detailtable.append(row);});details.append(detailtable);
+ const payer=people.find(p=>String(p.id)===$("payer").value);
+ const reimbursements=payer?shares.filter((s,i)=>people[i].id!==payer.id&&s.total>0).map(s=>({from:s.name,to:payer.name.trim(),amount:s.total})):[];
+ const settlement=document.createElement("div");
+ if(payer){const h=document.createElement("h2");h.textContent="Who pays whom";settlement.append(h);
+  const note=document.createElement("p");note.textContent=payer.name.trim()+" paid the entire "+money(total)+" bill. Their own share is already included.";settlement.append(note);
+  if(!reimbursements.length){const note2=document.createElement("p");note2.textContent="No reimbursements needed.";settlement.append(note2);}
+  reimbursements.forEach(r=>{const line=document.createElement("p");line.textContent=r.from+" pays "+r.to+" "+money(r.amount);settlement.append(line);});
+ }
  const copy=document.createElement("button");copy.type="button";copy.textContent="Copy split summary";
- const text="Dinner bill split — GirlSplitTheBill.com\n"+shares.map(s=>s.name+": "+money(s.total)).join("\n")+"\nTotal: "+money(total)+"\nTax and tip: "+($("method").value==="equal"?"equal":"proportional");
+ const text="Dinner bill split — GirlSplitTheBill.com\n"+shares.map(s=>s.name+": "+money(s.total)).join("\n")+"\nTotal: "+money(total)+"\nTax and tip: "+($("method").value==="equal"?"equal":"proportional")+(payer?"\n\nWho pays whom\n"+(reimbursements.length?reimbursements.map(r=>r.from+" pays "+r.to+" "+money(r.amount)).join("\n"):"No reimbursements needed."):"");
  copy.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(text);copy.textContent="Copied!";if(typeof gtag==="function")gtag("event","dinner_split_copied");}catch(e){const ta=document.createElement("textarea");ta.value=text;document.body.append(ta);ta.select();const ok=document.execCommand("copy");ta.remove();copy.textContent=ok?"Copied!":"Copy unavailable";}});
- output.className="panel";output.append(heading,summary,table,details,copy);
+ output.className="panel";output.append(heading,summary,table,details,settlement,copy);
  if(trackEvent && typeof gtag==="function") gtag("event","dinner_split_calculated",{allocation_method:$("method").value,diner_count:people.length,drinker_count:drinkers});
 }
-function reset(){ $("total").value="156";$("alcohol").value="30";$("tax").value="12";$("tip").value="24";$("method").value="proportional";people=[];addPerson("Maya",true);addPerson("Nina",false);addPerson("Chloe",true);calculate();}
+function reset(){ $("total").value="156";$("alcohol").value="30";$("tax").value="12";$("tip").value="24";$("method").value="proportional";people=[];addPerson("Maya",true);addPerson("Nina",false);addPerson("Chloe",true);$("payer").value=String(people[0].id);calculate();}
 $("add").addEventListener("click",()=>addPerson("Person "+(people.length+1),false));
 $("calculate").addEventListener("click",()=>calculate(true));
 $("reset").addEventListener("click",reset);

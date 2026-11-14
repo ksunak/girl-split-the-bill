@@ -24,6 +24,14 @@ table{border-collapse:collapse;width:100%;margin-top:10px}td,th{text-align:left;
 details{margin-top:15px}summary{cursor:pointer;font-weight:700}
 @media(max-width:550px){.grid{grid-template-columns:1fr}.person{flex-wrap:wrap}.person input[type=text]{width:60%}}
 </style>
+<!-- Google Analytics 4: existing GirlSplitTheBill property -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XSCHGNVVPE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XSCHGNVVPE');
+</script>
 </head>
 <body><main>
 <header><a href="/">💕 GirlSplitTheBill</a></header>
@@ -82,7 +90,7 @@ function allocate(total,weights){
  return base;
 }
 function money(c){return "$"+(c/100).toFixed(2);}
-function calculate(){
+function calculate(trackEvent=false){
  const output=$("output");output.textContent="";
  const total=cents("total"),alcohol=cents("alcohol"),tax=cents("tax"),tip=cents("tip");
  if([total,alcohol,tax,tip].some(x=>x===null)){output.className="panel error";output.textContent="Enter valid non-negative dollar amounts in every receipt field.";return;}
@@ -109,12 +117,13 @@ function calculate(){
  shares.forEach(s=>{const row=document.createElement("tr");[s.name,money(s.food),money(s.alcohol),money(s.tax),money(s.tip)].forEach(t=>{const td=document.createElement("td");td.textContent=t;row.append(td)});detailtable.append(row);});details.append(detailtable);
  const copy=document.createElement("button");copy.type="button";copy.textContent="Copy split summary";
  const text="Dinner bill split — GirlSplitTheBill.com\n"+shares.map(s=>s.name+": "+money(s.total)).join("\n")+"\nTotal: "+money(total)+"\nTax and tip: "+($("method").value==="equal"?"equal":"proportional");
- copy.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(text);copy.textContent="Copied!";}catch(e){const ta=document.createElement("textarea");ta.value=text;document.body.append(ta);ta.select();const ok=document.execCommand("copy");ta.remove();copy.textContent=ok?"Copied!":"Copy unavailable";}});
+ copy.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(text);copy.textContent="Copied!";if(typeof gtag==="function")gtag("event","dinner_split_copied");}catch(e){const ta=document.createElement("textarea");ta.value=text;document.body.append(ta);ta.select();const ok=document.execCommand("copy");ta.remove();copy.textContent=ok?"Copied!":"Copy unavailable";}});
  output.className="panel";output.append(heading,summary,table,details,copy);
+ if(trackEvent && typeof gtag==="function") gtag("event","dinner_split_calculated",{allocation_method:$("method").value,diner_count:people.length,drinker_count:drinkers});
 }
 function reset(){ $("total").value="156";$("alcohol").value="30";$("tax").value="12";$("tip").value="24";$("method").value="proportional";people=[];addPerson("Maya",true);addPerson("Nina",false);addPerson("Chloe",true);calculate();}
 $("add").addEventListener("click",()=>addPerson("Person "+(people.length+1),false));
-$("calculate").addEventListener("click",calculate);
+$("calculate").addEventListener("click",()=>calculate(true));
 $("reset").addEventListener("click",reset);
 reset();
 })();

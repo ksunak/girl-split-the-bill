@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roommate Expense Splitter – Split Rent & Bills Free | GirlSplitTheBill</title>
+<meta name="description" content="Free roommate expense splitter: divide rent equally or by custom amounts, split utilities and groceries, track who paid, and calculate who owes whom. No signup.">
+<meta property="og:title" content="Free Roommate Expense Splitter – Rent, Utilities & Bills"><meta property="og:description" content="Split roommate rent and shared bills, track who paid, and settle up without an account."><meta property="og:type" content="website"><meta property="og:url" content="https://girlsplitthebill.com/roommate-expense-calculator.html">
+<link rel="canonical" href="https://girlsplitthebill.com/roommate-expense-calculator.html">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XSCHGNVVPE"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-XSCHGNVVPE');</script>
+<style>
+:root{--ink:#233d42;--teal:#146a70;--deep:#123f46;--sand:#f5eee4;--line:#e4e8e5;--muted:#657477;--sky:#e6f3f1}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f8f9f6;color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}a{color:var(--teal)}
+header{background:white;border-bottom:1px solid var(--line);padding:18px max(22px,calc((100vw - 1040px)/2));display:flex;justify-content:space-between;align-items:center;gap:18px}header a{text-decoration:none}.brand{font-weight:850;letter-spacing:-.5px;font-size:1.25rem;color:var(--deep)}header>a:last-child{font-size:.88rem;font-weight:650}
+main,footer{max-width:1040px;margin:auto;padding:24px 22px}main{padding-top:0}.hero{background:linear-gradient(122deg,#e8f4f0 0%,#f8f1e8 100%);border-radius:0 0 26px 26px;padding:46px 38px 34px;margin:0 -22px 26px;position:relative;overflow:hidden}.hero:after{content:'$';position:absolute;right:32px;top:-62px;font-size:260px;font-weight:800;color:#186c6e0c;pointer-events:none}.eyebrow{font-size:.77rem;text-transform:uppercase;letter-spacing:2px;font-weight:800;color:var(--teal);margin:0 0 12px}h1{font-size:clamp(2.15rem,5vw,3.35rem);line-height:1.12;letter-spacing:-1.7px;max-width:720px;margin:0 0 16px}h2{font-size:1.3rem;letter-spacing:-.3px;margin:0 0 12px}h3{font-size:1.06rem;margin:20px 0 6px}p{margin:8px 0 16px}.hero p{max-width:670px;font-size:1.07rem;color:#4c6869}.chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.chip{border:1px solid #b8d9d3;background:#ffffffb8;color:#275b5d;padding:6px 12px;border-radius:30px;font-size:.82rem;font-weight:650}.muted,small{color:var(--muted)}
+.card{background:white;border:1px solid var(--line);border-radius:20px;padding:26px 30px;margin:18px 0;box-shadow:0 6px 25px #173d3d08}.card>h2:first-child{display:flex;align-items:center;gap:12px}.card>h2:first-child:before{content:'✓';display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--sky);color:var(--teal);font-size:.95rem;flex-shrink:0}#results{border-color:#9ccfc7;background:#fcfffe}#results>h2:first-child:before{content:'✓'}
+label{display:block;font-size:.85rem;font-weight:700;margin-bottom:6px;color:#3a5458}input,select{width:100%;min-height:46px;border:1px solid #c9d8d5;border-radius:11px;padding:10px 12px;background:#fff;color:var(--ink);font:inherit;transition:border-color .15s,box-shadow .15s}input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 3px #146a7018;outline:none}button{border:0;border-radius:11px;padding:11px 17px;background:var(--teal);color:white;font:inherit;font-weight:750;cursor:pointer;min-height:46px;transition:transform .1s,background .1s}button:hover{filter:brightness(.94)}button:active{transform:translateY(1px)}button.secondary{background:#e7f3f0;color:#15595e}button.danger{background:#fff1ef;color:#9b4b46;font-size:.82rem;min-height:38px;padding:8px 12px}button:disabled{opacity:.4;cursor:not-allowed}button:focus-visible{outline:3px solid #79bcb8;outline-offset:2px}
+.row{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.grow{flex:1;min-width:130px}.mini{width:110px}.entry{padding:18px;margin:12px 0;background:#fbfcfa;border:1px solid #e8eeeb;border-radius:14px}.entry:first-child{margin-top:14px}.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.checks{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.checks label{display:flex;align-items:center;gap:6px;font-weight:550;margin:0;background:white;border:1px solid var(--line);padding:6px 11px;border-radius:30px}.checks input{width:auto;min-height:0;accent-color:var(--teal)}.custom{background:var(--sand);padding:14px;border-radius:12px;margin-top:12px}.hidden{display:none!important}.note{padding:15px;background:#eff7f4;border-left:3px solid #6db7a9;border-radius:8px;font-size:.93rem}#calculate{width:100%;font-size:1.06rem;padding:15px}
+table{width:100%;border-collapse:collapse}th,td{padding:12px 6px;border-bottom:1px solid var(--line);text-align:left}td:last-child,th:last-child{text-align:right}th{font-size:.82rem;color:var(--muted)}.error{color:#a22d25;font-weight:650}.success{color:#176a50}footer{font-size:.9rem;padding-bottom:45px;border-top:1px solid var(--line);margin-top:30px}footer a{margin-right:10px}
+#how-title,#faq-title{font-size:1.35rem}section[aria-labelledby] h3{color:var(--deep)}section[aria-labelledby] p{color:#53686b}
+@media(max-width:650px){header{padding:16px 18px}header>a:last-child{font-size:.77rem}main,footer{padding:16px}.hero{margin:0 -16px 20px;padding:34px 22px 28px;border-radius:0 0 22px 22px}.hero:after{font-size:170px;right:-8px;top:-35px}.hero p{font-size:1rem}.two,.three{grid-template-columns:1fr}.card{padding:19px 16px;border-radius:16px}.entry{padding:13px}.mini{width:100%}h1{letter-spacing:-1px}.card>h2:first-child{font-size:1.18rem}}
+</style></head>
+<body><header><a class="brand" href="/">GirlSplitTheBill</a><a href="/">Group expense calculator</a></header>
+<main><div class="hero"><p class="eyebrow">Share the space. Split the costs.</p><h1>Roommate expenses, made simple.</h1><p>Split rent, utilities, groceries, and shared bills fairly. See who paid, who owes, and settle up without the awkward math.</p><div class="chips"><span class="chip">✓ Free, no signup</span><span class="chip">✓ Equal or custom rent</span><span class="chip">✓ Clear reimbursements</span></div></div>
+<section class="card"><h2>1. Who lives here?</h2><div id="roommates"></div><button class="secondary" id="addRoommate">+ Add roommate</button></section>
+<section class="card"><h2>2. Add shared expenses</h2><p class="muted">Categories are prefilled to save time. Edit amounts, add expenses, or remove anything you don't need.</p><div id="expenses"></div><button class="secondary" id="addExpense">+ Add expense</button></section>
+<section class="card"><h2>3. See who owes whom</h2><p class="note">Rent defaults to an equal split. For a different rent amount per roommate, select <strong>Custom amounts</strong> on the rent expense. Other expenses can also be split equally or by custom amounts.</p><button id="calculate">Calculate roommate split</button><p id="error" class="error" role="alert" aria-live="polite"></p></section>
+<section class="card hidden" id="results"><h2>Monthly breakdown</h2><div id="summary"></div><h2 style="margin-top:20px">Who pays whom</h2><div id="settlement"></div><div class="row" style="margin-top:16px"><button id="copy">Copy summary</button><span id="copyStatus" class="muted" aria-live="polite"></span></div></section>
+<p class="muted">This calculator runs in your browser. It does not store your expenses on our servers. Amounts are rounded to cents; final settlements are based on actual payments entered.</p>
+<section class="card" aria-labelledby="how-title"><h2 id="how-title">How to split expenses with roommates</h2>
+<p>Add everyone sharing the home, enter each bill and its payer, then choose who should share that expense. Rent starts as an equal split, but you can switch to custom dollar amounts when bedrooms or arrangements differ. Press <strong>Calculate roommate split</strong> to see each person's share, what they already paid, and the smallest practical set of reimbursements.</p>
+<h3>Example: different rent amounts, equal utilities</h3>
+<p>Three roommates share $2,400 rent. Alex has the largest bedroom and pays $1,000 in rent; Sam and Jordan each owe $700. Their $150 electricity bill is split equally, adding $50 to each person's share. The calculator accounts for who actually paid both bills before showing who should reimburse whom.</p>
+</section>
+<section class="card" aria-labelledby="faq-title"><h2 id="faq-title">Roommate bill splitting FAQs</h2>
+<h3>Can roommates pay different amounts of rent?</h3><p>Yes. Choose <strong>Custom amounts</strong> for rent and enter each roommate's agreed share. The shares must add up to the full rent amount.</p>
+<h3>Can we split utilities equally but rent unequally?</h3><p>Yes. Every expense has its own split settings. Use custom amounts for rent and equal split for electricity, water, internet, or other shared bills.</p>
+<h3>What if only two roommates share a grocery purchase?</h3><p>For that expense, keep <strong>Equal split</strong> and select only the roommates who should share it.</p>
+<h3>Does the calculator track who paid each bill?</h3><p>Yes. Select a payer for each expense. Results show everyone's fair share, payments made, and who owes whom.</p>
+<h3>Do we need an account?</h3><p>No. Calculations happen in your browser. The page does not save a recurring household history, so copy your summary before leaving.</p>
+</section>
+<section class="card"><h2>Other ways to split bills</h2><p>Planning a trip or sharing purchases outside your home? Try the <a href="/">group expense calculator</a>. Splitting a restaurant check with drinks, tax and tip? Use the <a href="/dinner-bill-calculator.html">dinner bill calculator</a>.</p></section>
+</main>
+<footer><a href="/">Main calculator</a> · <a href="/dinner-bill-calculator.html">Dinner bill calculator</a> · <a href="/about.html">About</a></footer>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id), money=c=>(c/100).toLocaleString('en-US',{style:'currency',currency:'USD'});
+const categories=['Rent','Electricity','Gas','Water','Trash','Internet & TV','Groceries','Household Supplies','Other'];
+let nextId=1,roommates=[{id:nextId++,name:'Alex'},{id:nextId++,name:'Sam'},{id:nextId++,name:'Jordan'}];
+let expenses=[
+{id:nextId++,category:'Rent',label:'Rent',amount:'2400',payer:1,mode:'equal',custom:{},included:null},
+{id:nextId++,category:'Electricity',label:'Electricity',amount:'150',payer:2,mode:'equal',custom:{},included:null},
+{id:nextId++,category:'Internet & TV',label:'Internet',amount:'75',payer:3,mode:'equal',custom:{},included:null},
+{id:nextId++,category:'Groceries',label:'Groceries',amount:'225',payer:1,mode:'equal',custom:{},included:null}
+];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function cents(s){if(!/^\d+(?:\.\d{1,2})?$/.test(String(s).trim()))return null;const [a,b='']=String(s).trim().split('.');const v=Number(a)*100+Number(b.padEnd(2,'0'));return Number.isSafeInteger(v)?v:null}
+function allocate(total,weights){let sum=weights.reduce((a,b)=>a+b,0);if(sum<=0)throw Error('Choose at least one roommate with a positive share.');let raw=weights.map(w=>total*w/sum),base=raw.map(Math.floor),remaining=total-base.reduce((a,b)=>a+b,0);let order=raw.map((v,i)=>({i,frac:v-base[i]})).sort((a,b)=>b.frac-a.frac||a.i-b.i);for(let j=0;j<remaining;j++)base[order[j].i]++;return base}
+function renderRoommates(){$('roommates').innerHTML=roommates.map((r,i)=>`<div class="row entry"><div class="grow"><label for="r${r.id}">Roommate ${i+1}</label><input id="r${r.id}" data-r="${r.id}" value="${esc(r.name)}" maxlength="50"></div><button class="danger" data-remove-r="${r.id}" ${roommates.length<=2?'disabled':''}>Remove</button></div>`).join('')}
+function renderExpenses(){
+$('expenses').innerHTML=expenses.map(e=>{let ids=e.included||roommates.map(r=>r.id);
+return `<div class="entry" data-exp="${e.id}"><div class="three">
+<div><label>Category</label><select data-field="category">${categories.map(c=>`<option ${c===e.category?'selected':''}>${esc(c)}</option>`).join('')}</select></div>
+<div><label>Expense</label><input data-field="label" value="${esc(e.label)}" maxlength="70"></div>
+<div><label>Amount ($)</label><input inputmode="decimal" data-field="amount" value="${esc(e.amount)}"></div></div>
+<div class="two" style="margin-top:12px"><div><label>Who paid?</label><select data-field="payer"><option value="">Select payer</option>${roommates.map(r=>`<option value="${r.id}" ${e.payer===r.id?'selected':''}>${esc(r.name||'Roommate')}</option>`).join('')}</select></div>
+<div><label>How to split?</label><select data-field="mode"><option value="equal" ${e.mode==='equal'?'selected':''}>Equal split</option><option value="custom" ${e.mode==='custom'?'selected':''}>Custom amounts</option></select></div></div>
+<div class="${e.mode==='equal'?'':'hidden'}" data-equal="${e.id}"><label style="margin-top:10px">Split among</label><div class="checks">${roommates.map(r=>`<label><input type="checkbox" data-included="${r.id}" ${ids.includes(r.id)?'checked':''}>${esc(r.name||'Roommate')}</label>`).join('')}</div></div>
+<div class="custom ${e.mode==='custom'?'':'hidden'}" data-custom="${e.id}"><p class="muted" style="margin-top:0">Enter each person's exact share. The amounts must add up to the expense total.</p><div class="three">${roommates.map(r=>`<div><label>${esc(r.name||'Roommate')} ($)</label><input inputmode="decimal" data-share="${r.id}" value="${esc(e.custom[r.id]??'0')}"></div>`).join('')}</div></div>
+<button class="danger" data-remove-e="${e.id}" style="margin-top:10px">Remove expense</button></div>`}).join('')}
+function rerender(){renderRoommates();renderExpenses();$('results').classList.add('hidden')}
+$('addRoommate').onclick=()=>{roommates.push({id:nextId++,name:''});rerender()};
+$('addExpense').onclick=()=>{expenses.push({id:nextId++,category:'Other',label:'',amount:'0',payer:roommates[0]?.id||null,mode:'equal',custom:{},included:null});renderExpenses();$('results').classList.add('hidden')};
+$('roommates').addEventListener('input',ev=>{let id=Number(ev.target.dataset.r);if(!id)return;let r=roommates.find(r=>r.id===id);r.name=ev.target.value; // preserve in-progress edits; update labels after blur
+$('results').classList.add('hidden')});
+$('roommates').addEventListener('focusout',ev=>{if(ev.target.dataset.r)renderExpenses()});
+$('roommates').addEventListener('click',ev=>{let id=Number(ev.target.dataset.removeR);if(!id||roommates.length<=2)return;roommates=roommates.filter(r=>r.id!==id);expenses.forEach(e=>{if(e.payer===id)e.payer=null;if(e.included)e.included=e.included.filter(x=>x!==id);delete e.custom[id]});rerender()});
+$('expenses').addEventListener('input',ev=>updateExpense(ev));
+$('expenses').addEventListener('change',ev=>{updateExpense(ev);if(['mode','category'].includes(ev.target.dataset.field))renderExpenses()});
+function updateExpense(ev){const wrap=ev.target.closest('[data-exp]');if(!wrap)return;const e=expenses.find(x=>x.id===Number(wrap.dataset.exp));if(!e)return;let field=ev.target.dataset.field;
+if(field){e[field]=field==='payer'?(ev.target.value?Number(ev.target.value):null):ev.target.value}
+if(ev.target.dataset.share)e.custom[Number(ev.target.dataset.share)]=ev.target.value;
+if(ev.target.dataset.included){if(!e.included)e.included=roommates.map(r=>r.id);let id=Number(ev.target.dataset.included);e.included=ev.target.checked?[...new Set([...e.included,id])]:e.included.filter(x=>x!==id)}
+$('results').classList.add('hidden')}
+$('expenses').addEventListener('click',ev=>{let id=Number(ev.target.dataset.removeE);if(!id)return;expenses=expenses.filter(e=>e.id!==id);renderExpenses();$('results').classList.add('hidden')});
+let copied='';
+$('calculate').onclick=()=>{
+$('error').textContent='';try{
+if(roommates.length<2||roommates.some(r=>!r.name.trim()))throw Error('Please enter a name for every roommate.');
+if(new Set(roommates.map(r=>r.name.trim().toLowerCase())).size!==roommates.length)throw Error('Please use different names for each roommate.');
+if(!expenses.length)throw Error('Add at least one expense.');
+const shares=Object.fromEntries(roommates.map(r=>[r.id,0])),paid=Object.fromEntries(roommates.map(r=>[r.id,0])),categoryTotals={},details=[];let grand=0;
+for(let e of expenses){let total=cents(e.amount);if(total===null)throw Error('Enter a valid dollar amount (up to two decimal places) for '+(e.label||e.category)+'.');
+if(!e.payer||!roommates.some(r=>r.id===e.payer))throw Error('Select who paid for '+(e.label||e.category)+'.');
+let allocations;
+if(e.mode==='custom'){allocations=roommates.map(r=>cents(e.custom[r.id]??'0'));if(allocations.some(x=>x===null)||allocations.reduce((a,b)=>a+b,0)!==total)throw Error('Custom shares for '+(e.label||e.category)+' must add up to '+money(total)+'.')}
+else{let ids=e.included||roommates.map(r=>r.id);if(!ids.length)throw Error('Select at least one roommate for '+(e.label||e.category)+'.');allocations=allocate(total,roommates.map(r=>ids.includes(r.id)?1:0))}
+roommates.forEach((r,i)=>shares[r.id]+=allocations[i]);paid[e.payer]+=total;grand+=total;categoryTotals[e.category]=(categoryTotals[e.category]||0)+total;details.push({label:e.label||e.category,total,payer:e.payer});
+}
+let debtors=roommates.map(r=>({id:r.id,amount:shares[r.id]-paid[r.id]})).filter(x=>x.amount>0),creditors=roommates.map(r=>({id:r.id,amount:paid[r.id]-shares[r.id]})).filter(x=>x.amount>0);
+let payments=[];for(let d of debtors){for(let c of creditors){let amount=Math.min(d.amount,c.amount);if(amount>0){payments.push({from:d.id,to:c.id,amount});d.amount-=amount;c.amount-=amount}}}
+let name=id=>roommates.find(r=>r.id===id)?.name||'Roommate';
+$('summary').innerHTML=`<p><strong>Total: ${money(grand)}</strong> across ${expenses.length} expense${expenses.length===1?'':'s'}</p><h3>By category</h3><table><tbody>${Object.entries(categoryTotals).map(([c,v])=>`<tr><td>${esc(c)}</td><td>${money(v)}</td></tr>`).join('')}</tbody></table><h3>Roommate balances</h3><table><thead><tr><th>Roommate</th><th>Fair share</th><th>Paid</th><th>Net</th></tr></thead><tbody>${roommates.map(r=>`<tr><td>${esc(r.name)}</td><td>${money(shares[r.id])}</td><td>${money(paid[r.id])}</td><td>${paid[r.id]>=shares[r.id]?'Gets back ':'Owes '}${money(Math.abs(paid[r.id]-shares[r.id]))}</td></tr>`).join('')}</tbody></table>`;
+$('settlement').innerHTML=payments.length?`<table><tbody>${payments.map(p=>`<tr><td>${esc(name(p.from))} pays ${esc(name(p.to))}</td><td><strong>${money(p.amount)}</strong></td></tr>`).join('')}</tbody></table>`:'<p>Everyone is settled up!</p>';
+copied=['Roommate expenses — GirlSplitTheBill','Total: '+money(grand),'','Categories:',...Object.entries(categoryTotals).map(([c,v])=>c+': '+money(v)),'','Shares:',...roommates.map(r=>`${r.name}: share ${money(shares[r.id])}, paid ${money(paid[r.id])}`),'','Final payments:',...(payments.length?payments.map(p=>`${name(p.from)} pays ${name(p.to)} ${money(p.amount)}`):['Everyone is settled up!']),'','https://girlsplitthebill.com/roommate-expense-calculator.html'].join('\n');
+$('results').classList.remove('hidden');$('copyStatus').textContent='';
+if(typeof gtag==='function')gtag('event','roommate_split_calculated',{roommate_count:roommates.length,expense_count:expenses.length});
+$('results').scrollIntoView({behavior:'smooth',block:'start'});
+}catch(err){$('error').textContent=err.message}
+};
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(copied);$('copyStatus').textContent='Copied!';if(typeof gtag==='function')gtag('event','roommate_split_copied')}catch{$('copyStatus').textContent='Copy unavailable in this browser.'}};
+renderRoommates();renderExpenses();
+})();
+</script></body></html>
